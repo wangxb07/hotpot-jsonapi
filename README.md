@@ -13,20 +13,20 @@ const schema = new Schema({
     primary: 'id',
     attributes: {
       title: { type: "string" },
-      body: { type: "string" }
+      body: { type: "string" },
       created: { type: "datetime" }
-    }
+    },
     relationships: {
-      author: { ref: '#author' }
+      author: { type: 'hasOne', ref: 'author' }
     }
   },
   author: {
     primary: 'id',
     attributes: {
       name: { type: 'string' }
-    }
+    },
     relationships: {
-      articles: { type: 'array', items: { ref: '#article' } }
+      articles: { type: 'hasMany', ref: 'article' }
     }
   }
 })
@@ -52,7 +52,7 @@ const attrs = data.attributes()
 
 // or attributes with processor
 const attrs = data.attributes({
-  keyConversion: '' // Options include: dash-case (default),
+  keyConversion: '', // Options include: dash-case (default),
                     // lisp-case, spinal-case, kebab-case,
                     // underscore_case, snake_case, camelCase, CamelCase,
   serializer: [DateTimeSerializer]
