@@ -36,10 +36,10 @@ const schema = new Schema({
 
 ```typescript
 
-const model: JsonapiModel = createJsonapiModel(schema)
+const model: JsonapiModelManager = new JsonapiModelManager(schema)
 
 // Get single entity
-const response: JsonapiResponse = model('article').load(id)
+const response: JsonapiResponse = model.get('article').load(id)
 
 const data: Resource = response.data()
 
@@ -90,7 +90,7 @@ query.filters([{
 .sort('title', '-created')
 .page({ offset: 0, limit: 10 }))
 
-const response: JsonapiResponse = model('article').load(query)
+const response: JsonapiResponse = model.get('article').load(query)
 
 const data: Resource[] = response.data()
 ```
@@ -99,7 +99,7 @@ const data: Resource[] = response.data()
 
 ```typescript
 ...
-const response: JsonapiResponse = model('article').included('author').load(query)
+const response: JsonapiResponse = model.get('article').included('author').load(query)
 ...
 ```
 
