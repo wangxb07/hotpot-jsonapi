@@ -36,7 +36,10 @@ const schema = new Schema({
 
 ```typescript
 
-const model: JsonapiModelManager = new JsonapiModelManager(schema)
+const model: JsonapiModelManager = new JsonapiModelManager({
+ schema: schema,
+ host: "http://example.com/jsonapi"
+})
 
 // Get single entity
 const response: JsonapiResponse = model.get('article').load(id)
