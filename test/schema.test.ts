@@ -108,4 +108,19 @@ describe('Schema', () => {
 
     expect(schema.models.article.relationships.author).toBeDefined();
   });
+
+  test('schema has model or no model', () => {
+    const models = {
+      article: {
+        attributes: {
+          title: {type: "string"}
+        }
+      }
+    };
+
+    const schema = new Schema(models);
+
+    expect(schema.hasModel('article')).toBeTruthy();
+    expect(schema.hasModel('author')).toBeFalsy();
+  })
 });

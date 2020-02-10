@@ -72,4 +72,8 @@ export default class Schema {
 
     this._models = models;
   }
+
+  hasModel(model: string) {
+    return this._models[model] !== undefined;
+  }
 }

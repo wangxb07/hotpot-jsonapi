@@ -2,7 +2,7 @@ export interface UrlResolverInterface {
   resolve(model: string): string
 }
 
-export class UrlResloveError implements Error {
+export class UrlResolveError implements Error {
   message: string;
   name: string;
 }
