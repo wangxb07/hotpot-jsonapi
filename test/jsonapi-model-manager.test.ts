@@ -83,4 +83,25 @@ describe('JsonapiModelManager', () => {
       expect(res.name).toEqual('hotpot-jsonapi');
     });
   });
+
+  test('get model definition by model name', () => {
+    const models = {
+      article: {
+        attributes: {
+          title: {type: "string"},
+        }
+      }
+    };
+
+    const schema = new Schema(models);
+
+    const m = new JsonapiModelManager({
+      schema: schema,
+      host: "http://example.com/jsonapi",
+      fetch: axiosFetch,
+    });
+
+    expect(m.getModelDefinition('article')).toEqual(models['article']);
+    expect(() => m.getModelDefinition('author')).toThrow(NotFoundModelError);
+  });
 });

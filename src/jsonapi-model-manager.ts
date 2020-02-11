@@ -1,4 +1,4 @@
-import Schema from "./schema";
+import Schema, {ModelDefinition} from "./schema";
 import UrlResolverBase, {UrlResolverInterface} from "./url-resolver/base";
 import JsonapiModel from "./jsonapi-model";
 import {FetchOptions} from "./fetch";
@@ -67,5 +67,13 @@ export default class JsonapiModelManager {
 
   fetch(url: string, options?: FetchOptions) {
     return this._fetch(url, options);
+  }
+
+  getModelDefinition(name: string): ModelDefinition {
+    if (!this._schema.hasModel(name)) {
+      throw new NotFoundModelError()
+    }
+
+    return this._schema.models[name];
   }
 }

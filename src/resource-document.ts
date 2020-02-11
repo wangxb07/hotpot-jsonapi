@@ -35,6 +35,17 @@ export interface Resource {
   links?: Dict<ResourceLink>;
 }
 
+export interface Error {
+  id?: string;
+  links?: ResourceLink;
+  status?: string;
+  code?: string;
+  title?: string;
+  detail?: string;
+  source?: any;
+  meta?: any;
+}
+
 export interface ResourceDocument {
   data: Resource | Resource[] | ResourceIdentity | ResourceIdentity[];
   included?: Resource[];

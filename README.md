@@ -63,15 +63,15 @@ const attrs = data.serialize({
 })
 
 // relationships
-const author: ResourceIdentifier = data.relationships('author').data()
+const author: ResourceIdentifier = data.getRelationship('author').data
 const data: JsonapiResource = author.makeUp(data.included()) // data.included() return JsonapiResource[]
 
 const author_response: JsonapiResponse = await author.fetch()
-const author_data = author_response.data()
+const author_data = author_response.data
 
 // links
 const link: ResourceLink = data.links('self')
-const link_response = links.fetch()
+const link_response = link.fetch()
 
 // meta
 const meta = response.meta()

@@ -1,5 +1,6 @@
 import JsonapiModelManager from "./jsonapi-model-manager";
 import JsonapiResponse, {JsonapiResponseInterface} from "./jsonapi-response";
+import {ModelDefinition} from "./schema";
 
 interface JsonapiQueryInterface {
 }
@@ -12,10 +13,12 @@ export interface ModelInterface {
 export default class JsonapiModel implements ModelInterface {
   private readonly _manager: JsonapiModelManager;
   private readonly _name: string;
+  private readonly _model: ModelDefinition;
 
   constructor(name: string, manager: JsonapiModelManager) {
     this._name = name;
     this._manager = manager;
+    this._model = manager.getModelDefinition(this._name);
   }
 
   get manager(): JsonapiModelManager {
@@ -37,7 +40,7 @@ export default class JsonapiModel implements ModelInterface {
     }
 
     return this._manager.fetch(url).then(json => {
-      return Promise.resolve(new JsonapiResponse(json));
+      return Promise.resolve(new JsonapiResponse(json, this._manager));
     });
   }
 

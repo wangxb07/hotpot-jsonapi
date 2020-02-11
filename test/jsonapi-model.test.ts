@@ -4,7 +4,7 @@ import JsonapiModelManager from "../src/jsonapi-model-manager";
 import axios from "axios";
 import axiosFetch from "../src/plugins/fetch-axios";
 import {Dict} from "../src/utils";
-import JsonapiResponse from "../src/jsonapi-response";
+import JsonapiResponse, {JsonapiResponseError} from "../src/jsonapi-response";
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -48,7 +48,7 @@ describe('JsonapiModel', () => {
   test('model load by id', async () => {
     const model = new JsonapiModel('article', manager_simple);
 
-    mockedAxios.get.mockImplementationOnce(() => Promise.resolve({
+    mockedAxios.get.mockResolvedValue({
       "links": {
         "self": "http://example.com/articles",
         "next": "http://example.com/articles?page[offset]=2",
@@ -73,7 +73,7 @@ describe('JsonapiModel', () => {
           "self": "http://example.com/articles/1"
         }
       }
-    }));
+    });
 
     const res = await model.load('1');
 
@@ -88,5 +88,39 @@ describe('JsonapiModel', () => {
     // @ts-ignore
     expect(data.attributes.title).toEqual('JSON:API paints my bikeshed!');
 
+  }, 1000);
+
+  test('test errors return', async () => {
+    const model = new JsonapiModel('article', manager_simple);
+
+    mockedAxios.get.mockResolvedValue({
+      "errors": [
+        {
+          "status": "403",
+          "source": { "pointer": "/data/attributes/secretPowers" },
+          "detail": "Editing secret powers is not authorized on Sundays."
+        },
+        {
+          "status": "422",
+          "source": { "pointer": "/data/attributes/volume" },
+          "detail": "Volume does not, in fact, go to 11."
+        },
+        {
+          "status": "500",
+          "source": { "pointer": "/data/attributes/reputation" },
+          "title": "The backend responded with an error",
+          "detail": "Reputation service not responding after three requests."
+        }
+      ]
+    });
+
+    const res = await model.load('1');
+
+    expect(res).toBeInstanceOf(JsonapiResponse);
+    expect(() => {
+      res.data()
+    }).toThrow(JsonapiResponseError);
+    expect(res.errors().length).toEqual(3);
+    expect(res.errors()[0].status).toEqual('403');
   }, 1000);
 });

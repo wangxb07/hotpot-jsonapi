@@ -1,6 +1,8 @@
-import {Resource, ResourceIdentity, ResourceLink, ResourceRelationship} from "./resource-document";
+import {Resource, ResourceDocument, ResourceIdentity, ResourceLink, ResourceRelationship} from "./resource-document";
 import {Dict} from "./utils";
 import {ModelDefinition} from "./schema";
+import JsonapiResourceLink from "./jsonapi-resource-link";
+import JsonapiResourceRelationship from "./jsonapi-resource-relationship";
 
 export interface SerializeOptions {
 }
@@ -10,11 +12,11 @@ export interface Serializable {
 }
 
 export interface RelationshipGetter {
-  getRelationship(name: string): ResourceIdentity;
+  getRelationship(name: string): JsonapiResourceRelationship;
 }
 
 export interface LinkGetter {
-  getLink(name: string): ResourceLink;
+  getLink(name: string): JsonapiResourceLink;
 }
 
 export default class JsonapiResource implements Resource, Serializable, RelationshipGetter, LinkGetter {
@@ -58,11 +60,11 @@ export default class JsonapiResource implements Resource, Serializable, Relation
     return this._relationships;
   }
 
-  getRelationship(name: string): ResourceIdentity {
+  getRelationship(name: string): JsonapiResourceRelationship {
     throw new Error("Method not implemented.");
   }
 
-  getLink(name: string): ResourceLink {
+  getLink(name: string): JsonapiResourceLink {
     throw new Error("Method not implemented.");
   }
 }

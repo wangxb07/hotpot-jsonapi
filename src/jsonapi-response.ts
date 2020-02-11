@@ -1,8 +1,15 @@
-import {Resource} from "./resource-document";
+import {ResourceLink} from "./resource-document";
 import JsonapiResource from "./jsonapi-resource";
+import {ModelDefinition} from "./schema";
+import {Error as JsonapiError} from "./resource-document";
+import JsonapiModelManager from "./jsonapi-model-manager";
 
 export interface JsonapiResponseInterface {
   data(): JsonapiResource | JsonapiResource[];
+
+  errors(): JsonapiError[];
+
+  links(): ResourceLink;
 }
 
 export class JsonapiStructureBroken implements Error {
@@ -10,34 +17,55 @@ export class JsonapiStructureBroken implements Error {
   name: string;
 }
 
-class JsonapiResponseError implements Error {
+export class JsonapiResponseError implements Error {
   message: string;
   name: string;
 }
 
 export default class JsonapiResponse implements JsonapiResponseInterface {
+  private readonly _resource: JsonapiResource | JsonapiResource[];
   private readonly _originData: any;
-  private _data: JsonapiResource | JsonapiResource[];
+  private readonly _model: ModelDefinition;
 
-  constructor(data: any) {
-    this._originData = data;
-  }
+  constructor(json: any, manager: JsonapiModelManager) {
+    this._originData = json;
 
-  data(): JsonapiResource | JsonapiResource[] {
-    if (this._data === undefined) {
-      const json = this._originData;
+    if (json.errors === undefined) {
+      let data;
 
-      if (json.errors) {
-        throw new JsonapiResponseError();
+      if (Array.isArray(json.data)) {
+        data = json.data[0];
+      } else {
+        data = json.data;
       }
 
-      if (json.data === undefined) {
+      if (data === undefined ||
+        data.type === undefined ||
+        data.id === undefined) {
         throw new JsonapiStructureBroken();
       }
 
-      this._data = new JsonapiResource(json.data)
+      this._model = manager.getModelDefinition(data.type);
+      this._resource = new JsonapiResource(data, this._model);
+    }
+  }
+
+  data(): JsonapiResource | JsonapiResource[] {
+    if (this._resource === undefined) {
+      throw new JsonapiResponseError()
+    }
+    return this._resource;
+  }
+
+  errors(): JsonapiError[] {
+    if (this._originData.errors === undefined) {
+      return [];
     }
 
-    return this._data;
+    return this._originData.errors;
+  }
+
+  links(): ResourceLink {
+    throw new Error("Method not implemented.");
   }
 }
