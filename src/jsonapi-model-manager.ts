@@ -1,30 +1,8 @@
 import Schema from "./schema";
 import UrlResolverBase, {UrlResolverInterface} from "./url-resolver/base";
 import JsonapiModel from "./jsonapi-model";
+import {FetchOptions} from "./fetch";
 
-export type Method =
-  | 'get' | 'GET'
-  | 'delete' | 'DELETE'
-  | 'head' | 'HEAD'
-  | 'options' | 'OPTIONS'
-  | 'post' | 'POST'
-  | 'put' | 'PUT'
-  | 'patch' | 'PATCH'
-  | 'link' | 'LINK'
-  | 'unlink' | 'UNLINK'
-
-export interface FetchOptions {
-  method?: Method;
-  headers?: any;
-  body?: any;
-  mode?: "cors" | "no-cors" | "same-origin";
-  credentials?: "omit" | "same-origin" | "include";
-  cache?: "default" | "no-store" | "reload" | "no-cache" | "force-cache" | "only-if-cached";
-  redirect?: "follow" | "error" | "manual";
-  referrer?: string;
-  referrerPolicy?: "referrer" | "no-referrer-when-downgrade" | "origin" | "origin-when-cross-origin" | "unsafe-url";
-  integrity?: any;
-}
 
 type FetchFunc = (url: string, options?: FetchOptions) => Promise<any>;
 
@@ -88,6 +66,6 @@ export default class JsonapiModelManager {
   }
 
   fetch(url: string, options?: FetchOptions) {
-    return this._fetch(url, options)
+    return this._fetch(url, options);
   }
 }

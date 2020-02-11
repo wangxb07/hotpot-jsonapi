@@ -38,32 +38,33 @@ const schema = new Schema({
 
 const model: JsonapiModelManager = new JsonapiModelManager({
  schema: schema,
- host: "http://example.com/jsonapi"
-})
+ host: "http://example.com/jsonapi",
+ fetch: axiosFetch,
+});
 
 // Get single entity
 const response: JsonapiResponse = model.get('article').load(id)
 
-const data: Resource = response.data()
+const data: JsonapiResource = response.data()
 
 // Identifier fields
 const id = data.id
 const type = data.type
 
 // attributes
-const attrs = data.attributes()
+const attrs = data.attributes
 
 // or attributes with processor
-const attrs = data.attributes({
+const attrs = data.serialize({
   keyConversion: '', // Options include: dash-case (default),
                     // lisp-case, spinal-case, kebab-case,
                     // underscore_case, snake_case, camelCase, CamelCase,
-  serializer: [DateTimeSerializer]
+  serializers: [DateTimeSerializer]
 })
 
 // relationships
 const author: ResourceIdentifier = data.relationships('author').data()
-const data: Resource = author.makeUp(data.included()) // data.included() return Resource[]
+const data: JsonapiResource = author.makeUp(data.included()) // data.included() return JsonapiResource[]
 
 const author_response: JsonapiResponse = await author.fetch()
 const author_data = author_response.data()
@@ -95,7 +96,7 @@ query.filters([{
 
 const response: JsonapiResponse = model.get('article').load(query)
 
-const data: Resource[] = response.data()
+const data: JsonapiResource[] = response.data()
 ```
 
 ### Included fetch

@@ -1,8 +1,10 @@
-import {FetchOptions} from "../../src/jsonapi-model-manager";
 import axios, {AxiosRequestConfig} from "axios";
+import {FetchOptions} from "../fetch";
 
 export default (url: string, options?: FetchOptions) => {
-  let axiosOptions: AxiosRequestConfig = {};
+  let axiosOptions: AxiosRequestConfig = {
+    method: 'get'
+  };
 
   if (options !== undefined) {
     if (options.body !== undefined) {
@@ -22,8 +24,13 @@ export default (url: string, options?: FetchOptions) => {
     }
   }
 
-  return axios({
-    url,
+  if (axiosOptions.method.toLowerCase() === 'get') {
+    return axios.get(url, {
+      ...axiosOptions
+    });
+  }
+
+  return axios(url, {
     ...axiosOptions
-  })
+  });
 };
