@@ -1,8 +1,12 @@
 import {ResourceLink} from "./resource-document";
-import JsonapiResource from "./jsonapi-resource";
+import JsonapiResource, {SerializeOptions} from "./jsonapi-resource";
 import {ModelDefinition} from "./schema";
 import {Error as JsonapiError} from "./resource-document";
 import JsonapiManager from "./jsonapi-manager";
+
+export interface Serializable {
+  serialize(options: SerializeOptions): any
+}
 
 export interface JsonapiResponseInterface {
   data(): JsonapiResource | JsonapiResource[];
@@ -22,7 +26,7 @@ export class JsonapiResponseError implements Error {
   name: string;
 }
 
-export default class JsonapiResponse implements JsonapiResponseInterface {
+export default class JsonapiResponse implements JsonapiResponseInterface, Serializable {
   private readonly _resource: JsonapiResource | JsonapiResource[];
   private readonly _originData: any;
   private readonly _model: ModelDefinition;
@@ -46,7 +50,14 @@ export default class JsonapiResponse implements JsonapiResponseInterface {
       }
 
       this._model = manager.getModelDefinition(data.type);
-      this._resource = new JsonapiResource(data, this._model);
+
+      if (Array.isArray(json.data)) {
+        this._resource = json.data.map((d: any) => {
+          return new JsonapiResource(d, this._model)
+        })
+      } else {
+        this._resource = new JsonapiResource(data, this._model);
+      }
     }
   }
 
@@ -66,6 +77,10 @@ export default class JsonapiResponse implements JsonapiResponseInterface {
   }
 
   links(): ResourceLink {
+    throw new Error("Method not implemented.");
+  }
+
+  serialize(options: SerializeOptions) {
     throw new Error("Method not implemented.");
   }
 }

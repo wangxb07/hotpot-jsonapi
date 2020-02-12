@@ -7,10 +7,6 @@ import JsonapiResourceRelationship from "./jsonapi-resource-relationship";
 export interface SerializeOptions {
 }
 
-export interface Serializable {
-  serialize(options: SerializeOptions): any
-}
-
 export interface RelationshipGetter {
   getRelationship(name: string): JsonapiResourceRelationship;
 }
@@ -19,7 +15,7 @@ export interface LinkGetter {
   getLink(name: string): JsonapiResourceLink;
 }
 
-export default class JsonapiResource implements Resource, Serializable, RelationshipGetter, LinkGetter {
+export default class JsonapiResource implements Resource, RelationshipGetter, LinkGetter {
   attributes: Dict<any>;
   meta: Dict<any>;
 
@@ -41,10 +37,6 @@ export default class JsonapiResource implements Resource, Serializable, Relation
     this._relationships = data.relationships;
 
     this._model = model;
-  }
-
-  serialize(options: SerializeOptions): any {
-    // TODO
   }
 
   get links(): Dict<ResourceLink> {
