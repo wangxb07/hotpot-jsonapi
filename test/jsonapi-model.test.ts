@@ -1,7 +1,8 @@
+import axios from "axios";
+
 import JsonapiModel from "../src/jsonapi-model";
 import Schema, {ModelDefinition} from "../src/schema";
-import JsonapiModelManager from "../src/jsonapi-model-manager";
-import axios from "axios";
+import JsonapiManager from "../src/jsonapi-manager";
 import axiosFetch from "../src/plugins/fetch-axios";
 import {Dict} from "../src/utils";
 import JsonapiResponse, {JsonapiResponseError} from "../src/jsonapi-response";
@@ -12,7 +13,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 describe('JsonapiModel', () => {
   let models_simple: Dict<ModelDefinition>,
     schema_simple: Schema,
-    manager_simple: JsonapiModelManager;
+    manager_simple: JsonapiManager;
 
   beforeAll(() => {
     models_simple = {
@@ -26,7 +27,7 @@ describe('JsonapiModel', () => {
     };
 
     schema_simple = new Schema(models_simple);
-    manager_simple = new JsonapiModelManager({
+    manager_simple = new JsonapiManager({
       schema: schema_simple,
       host: 'http://example.com/jsonapi',
       fetch: axiosFetch,

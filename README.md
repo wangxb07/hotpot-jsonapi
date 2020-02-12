@@ -36,7 +36,7 @@ const schema = new Schema({
 
 ```typescript
 
-const model: JsonapiModelManager = new JsonapiModelManager({
+const model: JsonapiManager = new JsonapiManager({
  schema: schema,
  host: "http://example.com/jsonapi",
  fetch: axiosFetch,
@@ -63,7 +63,7 @@ const attrs = data.serialize({
 })
 
 // relationships
-const author: ResourceIdentifier = data.getRelationship('author').data
+const author: JsonapiResourceIdentifier = data.getRelationship('author').data
 const data: JsonapiResource = author.makeUp(data.included()) // data.included() return JsonapiResource[]
 
 const author_response: JsonapiResponse = await author.fetch()

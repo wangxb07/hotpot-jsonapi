@@ -1,9 +1,9 @@
 import Schema from "../src/schema";
-import JsonapiModelManager, {NotFoundModelError} from "../src/jsonapi-model-manager";
+import JsonapiManager, {NotFoundModelError} from "../src/jsonapi-manager";
 import JsonapiModel from "../src/jsonapi-model";
 import axiosFetch from "../src/plugins/fetch-axios";
 
-describe('JsonapiModelManager', () => {
+describe('JsonapiManager', () => {
   test('can be instantiated', () => {
     const models = {
       article: {
@@ -17,11 +17,11 @@ describe('JsonapiModelManager', () => {
 
     const schema = new Schema(models);
 
-    const model = new JsonapiModelManager({
+    const model = new JsonapiManager({
       schema: schema,
       host: "http://example.com/jsonapi"
     });
-    expect(model).toBeInstanceOf(JsonapiModelManager);
+    expect(model).toBeInstanceOf(JsonapiManager);
 
     expect(model.host).toEqual('http://example.com/jsonapi');
     expect(model.schema).toBeInstanceOf(Schema);
@@ -40,7 +40,7 @@ describe('JsonapiModelManager', () => {
 
     const schema = new Schema(models);
 
-    const model = new JsonapiModelManager({
+    const model = new JsonapiManager({
       schema: schema,
       host: "http://example.com/jsonapi"
     });
@@ -57,7 +57,7 @@ describe('JsonapiModelManager', () => {
     const models = {};
     const schema = new Schema(models);
 
-    const model = new JsonapiModelManager({
+    const model = new JsonapiManager({
       schema: schema,
       host: "http://example.com/jsonapi"
     });
@@ -73,7 +73,7 @@ describe('JsonapiModelManager', () => {
     const models = {};
     const schema = new Schema(models);
 
-    const model = new JsonapiModelManager({
+    const model = new JsonapiManager({
       schema: schema,
       host: "http://example.com/jsonapi",
       fetch: axiosFetch,
@@ -95,7 +95,7 @@ describe('JsonapiModelManager', () => {
 
     const schema = new Schema(models);
 
-    const m = new JsonapiModelManager({
+    const m = new JsonapiManager({
       schema: schema,
       host: "http://example.com/jsonapi",
       fetch: axiosFetch,

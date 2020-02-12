@@ -1,4 +1,4 @@
-import JsonapiModelManager from "./jsonapi-model-manager";
+import JsonapiManager from "./jsonapi-manager";
 import JsonapiResponse, {JsonapiResponseInterface} from "./jsonapi-response";
 import {ModelDefinition} from "./schema";
 
@@ -11,17 +11,17 @@ export interface ModelInterface {
 }
 
 export default class JsonapiModel implements ModelInterface {
-  private readonly _manager: JsonapiModelManager;
+  private readonly _manager: JsonapiManager;
   private readonly _name: string;
   private readonly _model: ModelDefinition;
 
-  constructor(name: string, manager: JsonapiModelManager) {
+  constructor(name: string, manager: JsonapiManager) {
     this._name = name;
     this._manager = manager;
     this._model = manager.getModelDefinition(this._name);
   }
 
-  get manager(): JsonapiModelManager {
+  get manager(): JsonapiManager {
     return this._manager;
   }
 

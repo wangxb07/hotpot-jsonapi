@@ -2,7 +2,7 @@ import {ResourceLink} from "./resource-document";
 import JsonapiResource from "./jsonapi-resource";
 import {ModelDefinition} from "./schema";
 import {Error as JsonapiError} from "./resource-document";
-import JsonapiModelManager from "./jsonapi-model-manager";
+import JsonapiManager from "./jsonapi-manager";
 
 export interface JsonapiResponseInterface {
   data(): JsonapiResource | JsonapiResource[];
@@ -27,7 +27,7 @@ export default class JsonapiResponse implements JsonapiResponseInterface {
   private readonly _originData: any;
   private readonly _model: ModelDefinition;
 
-  constructor(json: any, manager: JsonapiModelManager) {
+  constructor(json: any, manager: JsonapiManager) {
     this._originData = json;
 
     if (json.errors === undefined) {

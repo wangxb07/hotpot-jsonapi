@@ -6,7 +6,7 @@ import {FetchOptions} from "./fetch";
 
 type FetchFunc = (url: string, options?: FetchOptions) => Promise<any>;
 
-export interface JsonapiModelManagerOptions {
+export interface JsonapiManagerOptions {
   schema: Schema;
   host: string;
   fetch?: FetchFunc;
@@ -18,13 +18,13 @@ export class NotFoundModelError implements Error {
   name: string;
 }
 
-export default class JsonapiModelManager {
+export default class JsonapiManager {
   private readonly _schema: Schema;
   private readonly _urlResolver: UrlResolverInterface;
   private readonly _host: string;
   private readonly _fetch: FetchFunc;
 
-  constructor(options: JsonapiModelManagerOptions) {
+  constructor(options: JsonapiManagerOptions) {
     this._schema = options.schema;
     this._urlResolver = options.urlResolver === undefined ? new UrlResolverBase() : options.urlResolver;
     this._host = options.host;

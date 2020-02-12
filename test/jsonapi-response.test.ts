@@ -1,13 +1,13 @@
 import {Dict} from "../src/utils";
 import Schema, {ModelDefinition} from "../src/schema";
-import JsonapiModelManager from "../src/jsonapi-model-manager";
+import JsonapiManager from "../src/jsonapi-manager";
 import axiosFetch from "../src/plugins/fetch-axios";
 import JsonapiResponse from "../src/jsonapi-response";
 
 describe('JsonapiResponse', () => {
   let models_simple: Dict<ModelDefinition>,
     schema_simple: Schema,
-    manager_simple: JsonapiModelManager;
+    manager_simple: JsonapiManager;
 
   beforeAll(() => {
     models_simple = {
@@ -21,7 +21,7 @@ describe('JsonapiResponse', () => {
     };
 
     schema_simple = new Schema(models_simple);
-    manager_simple = new JsonapiModelManager({
+    manager_simple = new JsonapiManager({
       schema: schema_simple,
       host: 'http://example.com/jsonapi',
       fetch: axiosFetch,
