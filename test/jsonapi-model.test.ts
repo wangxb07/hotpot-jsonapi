@@ -5,7 +5,8 @@ import Schema, {ModelDefinition} from "../src/schema";
 import JsonapiManager from "../src/jsonapi-manager";
 import axiosFetch from "../src/plugins/fetch-axios";
 import {Dict} from "../src/utils";
-import JsonapiResponse, {JsonapiResponseError} from "../src/jsonapi-response";
+import JsonapiResponse, {JsonapiResponseError, JsonapiResponseInterface} from "../src/jsonapi-response";
+import JsonapiQuery from "../src/jsonapi-query";
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -124,4 +125,19 @@ describe('JsonapiModel', () => {
     expect(res.errors().length).toEqual(3);
     expect(res.errors()[0].status).toEqual('403');
   }, 1000);
+
+  test('fetch collection of model by simple query', async () => {
+    const query = new JsonapiQuery();
+    query.filter([{
+      attribute: 'age',
+      op: '<',
+      value: 10
+    }]).sort('title', '-created')
+      .page({offset: 0, limit: 10});
+
+    const response = await manager_simple.get('article').load(query);
+    expect(response).toBeInstanceOf(Array)
+
+    // const data: JsonapiResource[] = response.data()
+  });
 });

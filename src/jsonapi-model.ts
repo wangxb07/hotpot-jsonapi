@@ -1,9 +1,7 @@
 import JsonapiManager from "./jsonapi-manager";
 import JsonapiResponse, {JsonapiResponseInterface} from "./jsonapi-response";
 import {ModelDefinition} from "./schema";
-
-interface JsonapiQueryInterface {
-}
+import JsonapiQuery, {JsonapiQueryInterface} from "./jsonapi-query";
 
 export interface ModelInterface {
   load(query: string | JsonapiQueryInterface): Promise<JsonapiResponseInterface>;
@@ -37,6 +35,10 @@ export default class JsonapiModel implements ModelInterface {
     let url;
     if (typeof query === 'string') {
       url = this.getResourceUrl() + '/' + query;
+    }
+
+    if (query instanceof JsonapiQuery) {
+      url = this.getResourceUrl() + query.path();
     }
 
     return this._manager.fetch(url).then(json => {

@@ -92,9 +92,9 @@ query.filters([{
   value: 10
 }])
 .sort('title', '-created')
-.page({ offset: 0, limit: 10 }))
+.page({ offset: 0, limit: 10 })
 
-const response: JsonapiResponse = model.get('article').load(query)
+const response: JsonapiResponse = await model.get('article').load(query)
 
 const data: JsonapiResource[] = response.data()
 ```
@@ -103,7 +103,7 @@ const data: JsonapiResource[] = response.data()
 
 ```typescript
 ...
-const response: JsonapiResponse = model.get('article').included('author').load(query)
+const response: JsonapiResponseInterface = model.get('article').included('author').load(query)
 ...
 ```
 

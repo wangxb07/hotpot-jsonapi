@@ -76,10 +76,12 @@ export default class JsonapiResponse implements JsonapiResponseInterface, Serial
     return this._originData.errors;
   }
 
+  // TODO Implement links
   links(): ResourceLink {
     throw new Error("Method not implemented.");
   }
 
+  // TODO Implement serialize
   serialize(options: SerializeOptions) {
     throw new Error("Method not implemented.");
   }
