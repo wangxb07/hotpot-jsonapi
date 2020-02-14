@@ -58,7 +58,7 @@ export default class JsonapiQuery implements JsonapiQueryInterface {
     }, path);
 
     if (this._sorts.length > 0) {
-      path = path + separator(path) + this._sorts.join(",");
+      path = path + separator(path) + 'sort=' + this._sorts.join(",");
     }
 
     if (this._page.limit !== 0 || this._page.offset !== 0) {
