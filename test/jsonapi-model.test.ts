@@ -5,8 +5,9 @@ import Schema, {ModelDefinition} from "../src/schema";
 import JsonapiManager from "../src/jsonapi-manager";
 import axiosFetch from "../src/plugins/fetch-axios";
 import {Dict} from "../src/utils";
-import JsonapiResponse, {JsonapiResponseError, JsonapiResponseInterface} from "../src/jsonapi-response";
+import JsonapiResponse, {JsonapiResponseError} from "../src/jsonapi-response";
 import JsonapiQuery from "../src/jsonapi-query";
+import JsonapiResource from "../src/jsonapi-resource";
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -127,6 +128,34 @@ describe('JsonapiModel', () => {
   }, 1000);
 
   test('fetch collection of model by simple query', async () => {
+
+    mockedAxios.get.mockResolvedValue({
+      "links": {
+        "self": "http://example.com/articles",
+        "next": "http://example.com/articles?page[offset]=2",
+        "last": "http://example.com/articles?page[offset]=10"
+      },
+      "data": [{
+        "type": "article",
+        "id": "1",
+        "attributes": {
+          "title": "JSON:API paints my bikeshed!"
+        },
+        "links": {
+          "self": "http://example.com/articles/1"
+        }
+      }, {
+        "type": "article",
+        "id": "2",
+        "attributes": {
+          "title": "JSON:API paints your bikeshed!"
+        },
+        "links": {
+          "self": "http://example.com/articles/2"
+        }
+      }]
+    });
+
     const query = new JsonapiQuery();
     query.filter([{
       attribute: 'age',
@@ -135,9 +164,19 @@ describe('JsonapiModel', () => {
     }]).sort('title', '-created')
       .page({offset: 0, limit: 10});
 
-    const response = await manager_simple.get('article').load(query);
-    expect(response).toBeInstanceOf(Array)
+    const m = manager_simple.get('article');
+    expect(m.getRequestUrl(query)).toEqual("http://example.com/jsonapi/article?" +
+      "filter[age][value]=10&filter[age][operator]=%3C&sort=title,-created&page[limit]=10&page[offset]=0");
 
-    // const data: JsonapiResource[] = response.data()
+    const response = await m.load(query);
+    expect(response).toBeInstanceOf(JsonapiResponse);
+
+    const data = response.data();
+
+    expect((data as Array<JsonapiResource>).length).toEqual(2);
+    const d1 = (data as Array<JsonapiResource>)[0];
+
+    expect(d1.id).toEqual("1");
+    expect(d1.attributes.title).toEqual("JSON:API paints my bikeshed!");
   });
 });

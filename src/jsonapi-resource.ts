@@ -3,16 +3,22 @@ import {Dict} from "./utils";
 import {ModelDefinition} from "./schema";
 import JsonapiResourceLink from "./jsonapi-resource-link";
 import JsonapiResourceRelationship from "./jsonapi-resource-relationship";
+import JsonapiManager from "./jsonapi-manager";
 
 export interface SerializeOptions {
 }
 
 export interface RelationshipGetter {
-  getRelationship(name: string): JsonapiResourceRelationship;
+  getRelationship(name: string, manager: JsonapiManager): JsonapiResourceRelationship;
 }
 
 export interface LinkGetter {
   getLink(name: string): JsonapiResourceLink;
+}
+
+export class RelationshipNotFoundError implements Error {
+  message: string;
+  name: string;
 }
 
 export default class JsonapiResource implements Resource, RelationshipGetter, LinkGetter {
@@ -52,11 +58,15 @@ export default class JsonapiResource implements Resource, RelationshipGetter, Li
     return this._relationships;
   }
 
-  getRelationship(name: string): JsonapiResourceRelationship {
+  getLink(name: string): JsonapiResourceLink {
     throw new Error("Method not implemented.");
   }
 
-  getLink(name: string): JsonapiResourceLink {
-    throw new Error("Method not implemented.");
+  getRelationship(name: string, manager: JsonapiManager): JsonapiResourceRelationship {
+    if (this._relationships[name] === undefined) {
+      throw new RelationshipNotFoundError();
+    }
+
+    return new JsonapiResourceRelationship(this._relationships[name], manager);
   }
 }

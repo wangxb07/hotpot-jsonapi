@@ -2,7 +2,7 @@ import Schema, {ModelDefinition} from "./schema";
 import UrlResolverBase, {UrlResolverInterface} from "./url-resolver/base";
 import JsonapiModel from "./jsonapi-model";
 import {FetchOptions} from "./fetch";
-
+import JsonapiStorage, {JsonapiStorageInterface} from "./jsonapi-storage";
 
 type FetchFunc = (url: string, options?: FetchOptions) => Promise<any>;
 
@@ -19,6 +19,7 @@ export class NotFoundModelError implements Error {
 }
 
 export default class JsonapiManager {
+  private readonly _storage: JsonapiStorageInterface;
   private readonly _schema: Schema;
   private readonly _urlResolver: UrlResolverInterface;
   private readonly _host: string;
@@ -28,6 +29,8 @@ export default class JsonapiManager {
     this._schema = options.schema;
     this._urlResolver = options.urlResolver === undefined ? new UrlResolverBase() : options.urlResolver;
     this._host = options.host;
+    // TODO the storage configurable
+    this._storage = new JsonapiStorage(this);
 
     if (options.fetch === undefined) {
       this._fetch = (url: string, options: FetchOptions) => {
@@ -51,6 +54,10 @@ export default class JsonapiManager {
 
   get urlResolver() {
     return this._urlResolver;
+  }
+
+  get storage() {
+    return this._storage;
   }
 
   /**

@@ -1,11 +1,27 @@
 import JsonapiResource from "./jsonapi-resource";
+import JsonapiResponse, {JsonapiResponseInterface} from "./jsonapi-response";
+import JsonapiManager from "./jsonapi-manager";
+import {ResourceIdentity} from "./resource-document";
 
 interface Makeupable {
   makeup(): JsonapiResource;
+  fetch(): Promise<JsonapiResponseInterface>;
 }
 
 export default class JsonapiResourceIdentity implements Makeupable {
+  private _manager: JsonapiManager;
+  private readonly _resourceIdentity: ResourceIdentity;
+
+  constructor(resourceIdentity: ResourceIdentity,  manager: JsonapiManager) {
+    this._resourceIdentity = resourceIdentity;
+    this._manager = manager;
+  }
+
+  async fetch(): Promise<JsonapiResponseInterface> {
+    return await this._manager.get(this._resourceIdentity.type).load(this._resourceIdentity.id);
+  }
+
   makeup(): JsonapiResource {
-    throw new Error("Method not implemented.");
+    return this._manager.storage.find(this._resourceIdentity);
   }
 }
