@@ -5,10 +5,12 @@ export interface ResourceIdentity {
   type: string;
 }
 
-export interface ResourceLink {
+export interface ResourceLinkObject {
   href: string;
   meta?: Dict<any>;
 }
+
+export type ResourceLink = ResourceLinkObject | string
 
 export interface ResourceHasOneRelationship {
   data?: ResourceIdentity | null;

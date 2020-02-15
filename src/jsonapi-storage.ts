@@ -8,7 +8,7 @@ export interface JsonapiStorageInterface {
 }
 
 export default class JsonapiStorage implements JsonapiStorageInterface {
-  private _manager: JsonapiManager;
+  private readonly _manager: JsonapiManager;
   private _data: Map<string, Resource>;
 
   constructor(manager: JsonapiManager) {

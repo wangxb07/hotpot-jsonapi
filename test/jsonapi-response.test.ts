@@ -3,7 +3,8 @@ import Schema, {ModelDefinition} from "../src/schema";
 import JsonapiManager from "../src/jsonapi-manager";
 import axiosFetch from "../src/plugins/fetch-axios";
 import JsonapiResponse from "../src/jsonapi-response";
-import JsonapiResource from "../src/jsonapi-resource";
+import JsonapiResource, {LinkNotFoundError} from "../src/jsonapi-resource";
+import JsonapiResourceLink from "../src/jsonapi-resource-link";
 
 describe('JsonapiResponse', () => {
   let models_simple: Dict<ModelDefinition>,
@@ -119,5 +120,37 @@ describe('JsonapiResponse', () => {
     }, manager_simple);
 
     expect(res).toBeInstanceOf(JsonapiResponse);
+  });
+
+  test('response get link', () => {
+    const res = new JsonapiResponse({
+      "links": {
+        "self": "http://example.com/articles",
+        "next": "http://example.com/articles?page[offset]=2",
+        "last": "http://example.com/articles?page[offset]=10"
+      },
+      "data": [{
+        "type": "article",
+        "id": "1",
+        "attributes": {
+          "title": "JSON:API paints my bikeshed!"
+        }
+      },{
+        "type": "article",
+        "id": "2",
+        "attributes": {
+          "title": "JSON:API paints my bikeshed!"
+        }
+      }]
+    }, manager_simple);
+
+    const self = res.getLink('self');
+    expect(self).toBeInstanceOf(JsonapiResourceLink);
+    expect(self.href).toEqual("http://example.com/articles");
+
+    expect(() => res.getLink("unknown")).toThrow(LinkNotFoundError);
+
+    const links = res.links;
+    expect(links.next).toEqual("http://example.com/articles?page[offset]=2");
   })
 });

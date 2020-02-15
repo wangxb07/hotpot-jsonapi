@@ -115,7 +115,7 @@ describe('JsonapiResourceIdentity', () => {
     const res = await model.load('1');
     const resource = res.data() as JsonapiResource;
 
-    let author_id = resource.getRelationship('author', manager_simple).getResourceIdentity();
+    let author_id = resource.getRelationship('author').getResourceIdentity();
     expect(author_id).toBeInstanceOf(JsonapiResourceIdentity);
 
     author_id = (author_id as JsonapiResourceIdentity);

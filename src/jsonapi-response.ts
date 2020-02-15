@@ -1,8 +1,10 @@
 import {ResourceLink} from "./resource-document";
-import JsonapiResource, {SerializeOptions} from "./jsonapi-resource";
+import JsonapiResource, {LinkNotFoundError, SerializeOptions} from "./jsonapi-resource";
 import {ModelDefinition} from "./schema";
 import {Error as JsonapiError} from "./resource-document";
 import JsonapiManager from "./jsonapi-manager";
+import JsonapiResourceLink from "./jsonapi-resource-link";
+import {Dict} from "./utils";
 
 export interface Serializable {
   serialize(options: SerializeOptions): any
@@ -13,7 +15,7 @@ export interface JsonapiResponseInterface {
 
   errors(): JsonapiError[];
 
-  links(): ResourceLink;
+  getLink(name: string): JsonapiResourceLink;
 }
 
 export class JsonapiStructureBroken implements Error {
@@ -30,9 +32,12 @@ export default class JsonapiResponse implements JsonapiResponseInterface, Serial
   private readonly _resource: JsonapiResource | JsonapiResource[];
   private readonly _originData: any;
   private readonly _model: ModelDefinition;
+  private _links: Dict<ResourceLink>;
+  private _manager: JsonapiManager;
 
   constructor(json: any, manager: JsonapiManager) {
     this._originData = json;
+    this._manager = manager;
 
     if (json.errors === undefined) {
       let data;
@@ -58,6 +63,10 @@ export default class JsonapiResponse implements JsonapiResponseInterface, Serial
       } else {
         this._resource = new JsonapiResource(data, manager);
       }
+
+      if (json.links !== undefined) {
+        this._links = json.links;
+      }
     }
   }
 
@@ -68,6 +77,10 @@ export default class JsonapiResponse implements JsonapiResponseInterface, Serial
     return this._resource;
   }
 
+  get links(): Dict<ResourceLink> {
+    return this._links;
+  }
+
   errors(): JsonapiError[] {
     if (this._originData.errors === undefined) {
       return [];
@@ -76,9 +89,12 @@ export default class JsonapiResponse implements JsonapiResponseInterface, Serial
     return this._originData.errors;
   }
 
-  // TODO Implement links
-  links(): ResourceLink {
-    throw new Error("Method not implemented.");
+  getLink(name: string): JsonapiResourceLink {
+    if (this._links[name] === undefined) {
+      throw new LinkNotFoundError();
+    }
+
+    return new JsonapiResourceLink(this._links[name], this._manager);
   }
 
   // TODO Implement serialize

@@ -1,4 +1,4 @@
-import {ResourceLink} from "./resource-document";
+import {ResourceLink, ResourceLinkObject} from "./resource-document";
 import {Dict} from "./utils";
 import JsonapiResponse from "./jsonapi-response";
 import JsonapiManager from "./jsonapi-manager";
@@ -7,13 +7,24 @@ export interface Fetchable {
   fetch(): Promise<JsonapiResponse>
 }
 
-export default class JsonapiResourceLink implements ResourceLink, Fetchable {
+export default class JsonapiResourceLink implements ResourceLinkObject, Fetchable {
   href: string;
   meta: Dict<any>;
   private readonly _manager: JsonapiManager;
 
-  constructor(manager: JsonapiManager) {
+  constructor(link: ResourceLink, manager: JsonapiManager) {
     this._manager = manager;
+
+    if (typeof link === 'string') {
+      this.href = link;
+    }
+    else {
+      this.href = link.href;
+
+      if (link.meta !== undefined) {
+        this.meta = link.meta;
+      }
+    }
   }
 
   fetch(): Promise<JsonapiResponse> {

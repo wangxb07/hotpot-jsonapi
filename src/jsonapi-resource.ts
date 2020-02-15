@@ -21,6 +21,11 @@ export class RelationshipNotFoundError implements Error {
   name: string;
 }
 
+export class LinkNotFoundError implements Error {
+  message: string;
+  name: string;
+}
+
 export default class JsonapiResource implements Resource, RelationshipGetter, LinkGetter {
   attributes: Dict<any>;
   meta: Dict<any>;
@@ -61,7 +66,11 @@ export default class JsonapiResource implements Resource, RelationshipGetter, Li
   }
 
   getLink(name: string): JsonapiResourceLink {
-    throw new Error("Method not implemented.");
+    if (this._links[name] === undefined) {
+      throw new LinkNotFoundError();
+    }
+
+    return new JsonapiResourceLink(this._links[name], this._manager);
   }
 
   getRelationship(name: string): JsonapiResourceRelationship {
