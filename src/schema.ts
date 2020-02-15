@@ -10,6 +10,7 @@ export interface RelationshipDefinition {
   ref: string | string[];
 }
 
+// TODO Consider serializer in model definition
 export interface ModelDefinition {
   type?: string;
   primary?: string;

@@ -98,6 +98,7 @@ export default class JsonapiResponse implements JsonapiResponseInterface, Serial
   }
 
   // TODO Implement serialize
+  // TODO Consider move serialize to JsonapiModel class. and specified serializer in the schema
   serialize(options: SerializeOptions) {
     throw new Error("Method not implemented.");
   }
