@@ -53,10 +53,10 @@ export default class JsonapiResponse implements JsonapiResponseInterface, Serial
 
       if (Array.isArray(json.data)) {
         this._resource = json.data.map((d: any) => {
-          return new JsonapiResource(d, this._model)
+          return new JsonapiResource(d, manager)
         })
       } else {
-        this._resource = new JsonapiResource(data, this._model);
+        this._resource = new JsonapiResource(data, manager);
       }
     }
   }

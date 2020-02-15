@@ -30,9 +30,10 @@ export default class JsonapiResource implements Resource, RelationshipGetter, Li
   private readonly _links: Dict<ResourceLink>;
   private readonly _relationships: Dict<ResourceRelationship>;
   private readonly _data: Resource;
-  private readonly _model: ModelDefinition;
+  private readonly _manager: JsonapiManager;
+  private _model: ModelDefinition;
 
-  constructor(data: Resource, model: ModelDefinition) {
+  constructor(data: Resource, manager: JsonapiManager) {
     this.attributes = data.attributes;
     this.meta = data.meta;
 
@@ -42,7 +43,8 @@ export default class JsonapiResource implements Resource, RelationshipGetter, Li
     this._links = data.links;
     this._relationships = data.relationships;
 
-    this._model = model;
+    this._manager = manager;
+    this._model = this._manager.getModelDefinition(data.type);
   }
 
   get links(): Dict<ResourceLink> {
@@ -62,11 +64,11 @@ export default class JsonapiResource implements Resource, RelationshipGetter, Li
     throw new Error("Method not implemented.");
   }
 
-  getRelationship(name: string, manager: JsonapiManager): JsonapiResourceRelationship {
+  getRelationship(name: string): JsonapiResourceRelationship {
     if (this._relationships[name] === undefined) {
       throw new RelationshipNotFoundError();
     }
 
-    return new JsonapiResourceRelationship(this._relationships[name], manager);
+    return new JsonapiResourceRelationship(this._relationships[name], this._manager);
   }
 }

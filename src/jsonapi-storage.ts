@@ -20,8 +20,7 @@ export default class JsonapiStorage implements JsonapiStorageInterface {
     const key = this._hash(identity);
     if (this._data.has(key)) {
       const d = this._data.get(key);
-      const model = this._manager.getModelDefinition(d.type);
-      return new JsonapiResource(d, model);
+      return new JsonapiResource(d, this._manager);
     }
     return null;
   }

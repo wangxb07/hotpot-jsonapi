@@ -12,7 +12,7 @@ export default class JsonapiResourceRelationship implements ResourceHasOneRelati
   private readonly _data: ResourceIdentity | ResourceIdentity[];
   private readonly _meta: Dict<any>;
   private readonly _links: Dict<ResourceLink>;
-  private _manager: JsonapiManager;
+  private readonly _manager: JsonapiManager;
 
   constructor(json: any, manager: JsonapiManager) {
     this._data = json.data;
