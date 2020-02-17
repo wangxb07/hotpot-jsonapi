@@ -48,6 +48,29 @@ describe('JsonapiModel', () => {
     expect(url).toEqual('http://example.com/jsonapi/article');
   });
 
+  test('get request url', () => {
+    const model = new JsonapiModel('article', manager_simple);
+
+    expect(model.getRequestUrl('1')).toEqual('http://example.com/jsonapi/article/1');
+
+    expect(model.include("user.id").getRequestUrl('1'))
+      .toEqual('http://example.com/jsonapi/article/1?include=user.id');
+
+    const query = new JsonapiQuery();
+    query.filter([{
+      attribute: 'age',
+      op: '<',
+      value: 10
+    }]).sort('title', '-created')
+      .page({offset: 0, limit: 10});
+
+    const m = manager_simple.get('article').include('user.id', 'role');
+    expect(m.getRequestUrl(query)).toEqual("http://example.com/jsonapi/article?" +
+      "filter[age][value]=10&filter[age][operator]=%3C&sort=title,-created&page[limit]=10&page[offset]=0" +
+      "&include=user.id,role"
+    );
+  });
+
   test('model load by id', async () => {
     const model = new JsonapiModel('article', manager_simple);
 
@@ -128,7 +151,6 @@ describe('JsonapiModel', () => {
   }, 1000);
 
   test('fetch collection of model by simple query', async () => {
-
     mockedAxios.get.mockResolvedValue({
       "links": {
         "self": "http://example.com/articles",

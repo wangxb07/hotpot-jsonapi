@@ -6,18 +6,21 @@ import {ResourceDocument, Resource, ResourceIdentity} from "./resource-document"
 
 export interface ModelInterface {
   load(query: string | JsonapiQueryInterface): Promise<JsonapiResponseInterface>;
-  included(models: string | string[]): ModelInterface;
+  include(...models: string[]): ModelInterface;
+  getRequestUrl(query: string | JsonapiQueryInterface): string;
 }
 
 export default class JsonapiModel implements ModelInterface {
   private readonly _manager: JsonapiManager;
   private readonly _name: string;
   private readonly _model: ModelDefinition;
+  private _include: string[];
 
   constructor(name: string, manager: JsonapiManager) {
     this._name = name;
     this._manager = manager;
     this._model = manager.getModelDefinition(this._name);
+    this._include = [];
   }
 
   get manager(): JsonapiManager {
@@ -28,8 +31,9 @@ export default class JsonapiModel implements ModelInterface {
     return this._name;
   }
 
-  included(models: string | string[]): ModelInterface {
-    return undefined;
+  include(...models: string[]): ModelInterface {
+    this._include = models;
+    return this;
   }
 
   load(query: string | JsonapiQueryInterface): Promise<JsonapiResponseInterface> {
@@ -41,12 +45,22 @@ export default class JsonapiModel implements ModelInterface {
 
   getRequestUrl(query: string | JsonapiQueryInterface): string {
     let url;
+
     if (typeof query === 'string') {
       url = this.getResourceUrl() + '/' + query;
     }
     if (query instanceof JsonapiQuery) {
       url = this.getResourceUrl() + query.path();
     }
+
+    if (this._include.length > 0) {
+      let linkSymbol = '?';
+      if (url.search(/\?/gm) >= 0) {
+        linkSymbol = '&';
+      }
+      url = url + linkSymbol + 'include=' + this._include.join(",");
+    }
+
     return url;
   }
 
