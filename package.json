@@ -1,8 +1,11 @@
 {
   "name": "hotpot-jsonapi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A lightweight jsonapi client implement by typescript.",
   "main": "dist/index.js",
+  "repository": {
+    "url": "http://www.github.com/wangxb07/hotpot-jsonapi"
+  },
   "scripts": {
     "test": "jest --verbose false",
     "build": "tsc -b tsconfig.json"

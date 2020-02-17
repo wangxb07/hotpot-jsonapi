@@ -1,6 +1,4 @@
-import Schema from "../src/schema";
-import JsonapiManager, {NotFoundModelError} from "../src/jsonapi-manager";
-import JsonapiModel from "../src/jsonapi-model";
+import {JsonapiManager, NotFoundModelError, JsonapiModel, Schema} from "../src";
 import axiosFetch from "../src/plugins/fetch-axios";
 
 describe('JsonapiManager', () => {

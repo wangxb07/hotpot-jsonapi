@@ -1,10 +1,15 @@
 import {Dict} from "../src/utils";
-import Schema, {ModelDefinition} from "../src/schema";
-import JsonapiManager from "../src/jsonapi-manager";
 import axiosFetch from "../src/plugins/fetch-axios";
-import JsonapiResponse from "../src/jsonapi-response";
-import JsonapiResource, {LinkNotFoundError} from "../src/jsonapi-resource";
-import JsonapiResourceLink from "../src/jsonapi-resource-link";
+
+import {
+  Schema,
+  ModelDefinition,
+  JsonapiManager,
+  JsonapiResponse,
+  JsonapiResource,
+  LinkNotFoundError,
+  JsonapiResourceLink
+} from "../src";
 
 describe('JsonapiResponse', () => {
   let models_simple: Dict<ModelDefinition>,

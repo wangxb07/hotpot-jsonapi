@@ -1,9 +1,9 @@
 import JsonapiResource from "./jsonapi-resource";
-import JsonapiResponse, {JsonapiResponseInterface} from "./jsonapi-response";
+import {JsonapiResponseInterface} from "./jsonapi-response";
 import JsonapiManager from "./jsonapi-manager";
 import {ResourceIdentity} from "./resource-document";
 
-interface Makeupable {
+export interface Makeupable {
   makeup(): JsonapiResource;
   fetch(): Promise<JsonapiResponseInterface>;
 }

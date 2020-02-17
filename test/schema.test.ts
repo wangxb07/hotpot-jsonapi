@@ -1,4 +1,4 @@
-import Schema, {RelationshipDefinition, RelationshipReferenceError} from "../src/schema";
+import { Schema, RelationshipReferenceError} from "../src/index";
 
 describe('Schema', () => {
   test('can be instantiated', () => {

@@ -1,13 +1,16 @@
 import axios from "axios";
-
-import JsonapiModel from "../src/jsonapi-model";
-import Schema, {ModelDefinition} from "../src/schema";
-import JsonapiManager from "../src/jsonapi-manager";
 import axiosFetch from "../src/plugins/fetch-axios";
 import {Dict} from "../src/utils";
-import JsonapiResponse, {JsonapiResponseError} from "../src/jsonapi-response";
-import JsonapiQuery from "../src/jsonapi-query";
-import JsonapiResource from "../src/jsonapi-resource";
+import {
+  Schema,
+  ModelDefinition,
+  JsonapiManager,
+  JsonapiResponse,
+  JsonapiResponseError,
+  JsonapiQuery,
+  JsonapiResource,
+  JsonapiModel
+} from "../src";
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;

@@ -1,5 +1,4 @@
-import UrlResolverBase, {UrlResolveError} from "../src/url-resolver/base";
-import UrlResolverMapping from "../src/url-resolver/mapping";
+import {UrlResolverBase, UrlResolverMapping, UrlResolveError} from "../src";
 
 describe('UrlResolver', () => {
   test('base url resolver simple resolve', () => {

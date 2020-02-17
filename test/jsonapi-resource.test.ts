@@ -1,10 +1,15 @@
-import JsonapiResource, {LinkNotFoundError, RelationshipNotFoundError} from "../src/jsonapi-resource";
 import {Dict} from "../src/utils";
-import Schema, {ModelDefinition} from "../src/schema";
-import JsonapiManager from "../src/jsonapi-manager";
 import axiosFetch from "../src/plugins/fetch-axios";
 import axios from "axios";
-import JsonapiResourceRelationship from "../src/jsonapi-resource-relationship";
+import {
+  JsonapiResource,
+  LinkNotFoundError,
+  RelationshipNotFoundError,
+  Schema,
+  ModelDefinition,
+  JsonapiManager,
+  JsonapiResourceRelationship
+} from "../src";
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;

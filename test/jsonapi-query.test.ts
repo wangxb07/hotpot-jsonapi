@@ -1,4 +1,4 @@
-import JsonapiQuery from "../src/jsonapi-query";
+import { JsonapiQuery } from "../src";
 
 describe('JsonapiQuery', () => {
   test('path generate with filters', () => {

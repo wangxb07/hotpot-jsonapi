@@ -1,8 +1,7 @@
 import {Dict} from "../src/utils";
-import Schema, {ModelDefinition} from "../src/schema";
-import JsonapiManager from "../src/jsonapi-manager";
 import axiosFetch from "../src/plugins/fetch-axios";
-import JsonapiStorage from "../src/jsonapi-storage";
+
+import {Schema, ModelDefinition, JsonapiManager, JsonapiStorage} from "../src";
 
 describe('JsonapiStorage', () => {
   let models_simple: Dict<ModelDefinition>,
