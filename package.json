@@ -4,7 +4,8 @@
   "description": "A lightweight jsonapi client implement by typescript.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "jest --verbose false"
+    "test": "jest --verbose false",
+    "build": "tsc -b tsconfig.json"
   },
   "keywords": [
     "jsonapi"

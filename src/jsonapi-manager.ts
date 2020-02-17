@@ -1,7 +1,7 @@
 import Schema, {ModelDefinition} from "./schema";
 import UrlResolverBase, {UrlResolverInterface} from "./url-resolver/base";
 import JsonapiModel from "./jsonapi-model";
-import {FetchOptions} from "./fetch";
+import {FetchOptions} from "./utils";
 import JsonapiStorage, {JsonapiStorageInterface} from "./jsonapi-storage";
 
 type FetchFunc = (url: string, options?: FetchOptions) => Promise<any>;

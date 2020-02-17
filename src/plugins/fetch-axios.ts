@@ -1,5 +1,5 @@
 import axios, {AxiosRequestConfig} from "axios";
-import {FetchOptions} from "../fetch";
+import {FetchOptions} from "../utils";
 
 export default (url: string, options?: FetchOptions) => {
   let axiosOptions: AxiosRequestConfig = {
