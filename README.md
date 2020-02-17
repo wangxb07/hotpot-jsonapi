@@ -12,7 +12,7 @@ const schema = new Schema({
     type: 'node--article', // The type that defined by jsonapi server, default is the key
     primary: 'id',
     attributes: {
-      title: { type: "string" },
+      title: { type: "string", as: "name" },
       body: { type: "string" },
       created: { type: "datetime" }
     },
@@ -36,14 +36,18 @@ const schema = new Schema({
 
 ```typescript
 
-const model: JsonapiManager = new JsonapiManager({
+const manager: JsonapiManager = new JsonapiManager({
  schema: schema,
  host: "http://example.com/jsonapi",
  fetch: axiosFetch,
+ urlResolver: new UrlResolverMapping({
+   'article': '/node/node--article',
+   'author': '/user/user',
+ })
 });
 
 // Get single entity
-const response: JsonapiResponse = model.get('article').load(id)
+const response: JsonapiResponse = manager.get('article').load(id)
 
 const data: JsonapiResource = response.data()
 
@@ -63,14 +67,14 @@ const attrs = data.serialize({
 })
 
 // relationships
-const author: JsonapiResourceIdentifier = data.getRelationship('author', model).getResourceIdentity();
-const data: JsonapiResource = author.makeUp() // data.included() return JsonapiResource[]
+const author: JsonapiResourceIdentifier = data.getRelationship('author').getResourceIdentity();
+const author_data: JsonapiResource = author.makeUp() // data.included() return JsonapiResource[]
 
 const author_response: JsonapiResponse = await author.fetch()
 const author_data = author_response.data
 
 // links
-const link: JsonapiResourceLink = data.links('self')
+const link: JsonapiResourceLink = data.getLink('self')
 const link_response = link.fetch()
 
 // meta
@@ -94,7 +98,7 @@ query.filters([{
 .sort('title', '-created')
 .page({ offset: 0, limit: 10 })
 
-const response: JsonapiResponse = await model.get('article').load(query)
+const response: JsonapiResponse = await manager.get('article').load(query)
 
 const data: JsonapiResource[] = response.data()
 ```
@@ -103,7 +107,7 @@ const data: JsonapiResource[] = response.data()
 
 ```typescript
 ...
-const response: JsonapiResponseInterface = model.get('article').included('author').load(query)
+const response: JsonapiResponseInterface = manager.get('article').included('author').load(query)
 ...
 ```
 
