@@ -1,4 +1,5 @@
 import { Schema, RelationshipReferenceError} from "../src/index";
+import {expression} from "@babel/template";
 
 describe('Schema', () => {
   test('can be instantiated', () => {
@@ -115,6 +116,15 @@ describe('Schema', () => {
         attributes: {
           title: {type: "string"}
         }
+      },
+      store: {
+        type: 'commerce_store--online',
+        primary: 'id',
+        attributes: {
+          name:{ type: "string" },
+          mail:{ type: "string" },
+          address: { type: "string" }
+        }
       }
     };
 
@@ -122,5 +132,9 @@ describe('Schema', () => {
 
     expect(schema.hasModel('article')).toBeTruthy();
     expect(schema.hasModel('author')).toBeFalsy();
-  })
+
+    expect(schema.hasModel('store')).toBeTruthy();
+    expect(schema.hasModel('commerce_store--online')).toBeTruthy();
+    expect(schema.hasModel('commerce_store')).toBeFalsy();
+  });
 });

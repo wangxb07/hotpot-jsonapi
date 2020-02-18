@@ -1,8 +1,8 @@
-import fetchAxios from "./plugins/fetch-axios"
-
-export const plugins = {
-  fetchAxios
-};
+// import fetchAxios from "./plugins/fetch-axios"
+//
+// export const plugins = {
+//   fetchAxios
+// };
 
 export {
   ResourceLink,

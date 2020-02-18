@@ -81,6 +81,6 @@ export default class JsonapiManager {
       throw new NotFoundModelError()
     }
 
-    return this._schema.models[name];
+    return this._schema.getModel(name);
   }
 }

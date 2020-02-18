@@ -1,4 +1,5 @@
 import {Dict} from "./utils";
+import JsonapiModel from "./jsonapi-model";
 
 
 export interface AttributeDefinition {
@@ -75,6 +76,29 @@ export default class Schema {
   }
 
   hasModel(model: string) {
-    return this._models[model] !== undefined;
+    let has = this._models[model] !== undefined;
+    if (!has) {
+      const result = Object.keys(this._models).findIndex((k) => {
+        return this._models[k].type == model
+      });
+
+      has = result >= 0;
+    }
+
+    return has;
+  }
+
+  getModel(model: string): ModelDefinition {
+    let m = this._models[model];
+
+    if (m === undefined) {
+      const k = Object.keys(this._models).find((k) => {
+        return this._models[k].type === model
+      });
+
+      m = this._models[k];
+    }
+
+    return m;
   }
 }
