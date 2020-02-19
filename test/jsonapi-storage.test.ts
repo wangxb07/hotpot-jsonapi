@@ -1,6 +1,4 @@
 import {Dict} from "../src/utils";
-import axiosFetch from "../src/plugins/fetch-axios";
-
 import {Schema, ModelDefinition, JsonapiManager, JsonapiStorage} from "../src";
 
 describe('JsonapiStorage', () => {
@@ -31,7 +29,6 @@ describe('JsonapiStorage', () => {
     manager_simple = new JsonapiManager({
       schema: schema_simple,
       host: 'http://example.com/jsonapi',
-      fetch: axiosFetch,
     })
   });
 

@@ -1,5 +1,5 @@
-import {JsonapiManager, NotFoundModelError, JsonapiModel, Schema} from "../src";
-import axiosFetch from "../src/plugins/fetch-axios";
+import {JsonapiManager, NotFoundModelError, JsonapiModel, Schema, Resource, HttpClientNotImplementedError} from "../src";
+import FetchAxios from "../src/plugins/fetch-axios";
 
 describe('JsonapiManager', () => {
   test('can be instantiated', () => {
@@ -15,14 +15,14 @@ describe('JsonapiManager', () => {
 
     const schema = new Schema(models);
 
-    const model = new JsonapiManager({
+    const m = new JsonapiManager({
       schema: schema,
       host: "http://example.com/jsonapi"
     });
-    expect(model).toBeInstanceOf(JsonapiManager);
+    expect(m).toBeInstanceOf(JsonapiManager);
 
-    expect(model.host).toEqual('http://example.com/jsonapi');
-    expect(model.schema).toBeInstanceOf(Schema);
+    expect(m.host).toEqual('http://example.com/jsonapi');
+    expect(m.schema).toBeInstanceOf(Schema);
   });
 
   test('generate model from manager', () => {
@@ -55,30 +55,32 @@ describe('JsonapiManager', () => {
     const models = {};
     const schema = new Schema(models);
 
-    const model = new JsonapiManager({
-      schema: schema,
-      host: "http://example.com/jsonapi"
-    });
+    expect(() => {
+      const m = new JsonapiManager({
+        schema: schema,
+        host: "http://example.com/jsonapi"
+      });
 
-    model.fetch('http://fakeurl.com/').then(res => {
-
-    }).catch(e => {
-      expect(e).toEqual('fetch func not be implemented');
-    })
+      m.fetch('/fackurl');
+    }).toThrow(HttpClientNotImplementedError);
   });
 
   test('fetch implemented', () => {
     const models = {};
     const schema = new Schema(models);
 
-    const model = new JsonapiManager({
+    const m = new JsonapiManager({
       schema: schema,
       host: "http://example.com/jsonapi",
-      fetch: axiosFetch,
+      httpClient: new FetchAxios(),
     });
 
-    model.fetch('https://raw.githubusercontent.com/wangxb07/hotpot-jsonapi/master/package.json').then(res => {
-      expect(res.name).toEqual('hotpot-jsonapi');
+    m.fetch('http://www.mocky.io/v2/5e4cffe02d0000db48c0d88c').then(res => {
+      const data = res.data as Resource[];
+      expect(data.length).toEqual(3);
+      expect(data[0].id).toEqual('1');
+      expect(data[0].type).toEqual('articles');
+      expect(data[0].attributes.title).toEqual('JSON:API paints my bikeshed!');
     });
   });
 
@@ -96,7 +98,6 @@ describe('JsonapiManager', () => {
     const m = new JsonapiManager({
       schema: schema,
       host: "http://example.com/jsonapi",
-      fetch: axiosFetch,
     });
 
     expect(m.getModelDefinition('article')).toEqual(models['article']);

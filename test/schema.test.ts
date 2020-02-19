@@ -1,5 +1,4 @@
 import { Schema, RelationshipReferenceError, TypeConflictError} from "../src/index";
-import {expression} from "@babel/template";
 
 describe('Schema', () => {
   test('can be instantiated', () => {

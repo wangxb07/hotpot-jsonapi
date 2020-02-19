@@ -3,11 +3,7 @@ import {Dict} from "./utils";
 import JsonapiResponse from "./jsonapi-response";
 import JsonapiManager from "./jsonapi-manager";
 
-export interface Fetchable {
-  fetch(): Promise<JsonapiResponse>
-}
-
-export default class JsonapiResourceLink implements ResourceLinkObject, Fetchable {
+export default class JsonapiResourceLink implements ResourceLinkObject {
   href: string;
   meta: Dict<any>;
   private readonly _manager: JsonapiManager;

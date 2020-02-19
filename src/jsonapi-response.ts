@@ -1,4 +1,4 @@
-import {ResourceLink} from "./resource-document";
+import {ResourceDocument, ResourceLink} from "./resource-document";
 import JsonapiResource, {LinkNotFoundError, SerializeOptions} from "./jsonapi-resource";
 import {ModelDefinition} from "./schema";
 import {Error as JsonapiError} from "./resource-document";
@@ -30,7 +30,7 @@ export class JsonapiResponseError implements Error {
 
 export default class JsonapiResponse implements JsonapiResponseInterface, Serializable {
   private readonly _resource: JsonapiResource | JsonapiResource[];
-  private readonly _originData: any;
+  private readonly _originData: ResourceDocument;
   private readonly _model: ModelDefinition;
   private _links: Dict<ResourceLink>;
   private _manager: JsonapiManager;
@@ -100,6 +100,6 @@ export default class JsonapiResponse implements JsonapiResponseInterface, Serial
   // TODO Implement serialize
   // TODO Consider move serialize to JsonapiModel class. and specified serializer in the schema
   serialize(options: SerializeOptions) {
-    throw new Error("Method not implemented.");
+    this._manager.serialize(this._originData, options);
   }
 }

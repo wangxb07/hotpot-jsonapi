@@ -1,5 +1,5 @@
 import {Dict} from "../src/utils";
-import axiosFetch from "../src/plugins/fetch-axios";
+import FetchAxios from "../src/plugins/fetch-axios";
 
 import {
   Schema,
@@ -40,7 +40,7 @@ describe('JsonapiResponse', () => {
     manager_simple = new JsonapiManager({
       schema: schema_simple,
       host: 'http://example.com/jsonapi',
-      fetch: axiosFetch,
+      httpClient: new FetchAxios(),
     })
   });
 

@@ -53,4 +53,5 @@ export interface ResourceDocument {
   included?: Resource[];
   meta?: Dict<any>;
   links?: Dict<ResourceLink>;
+  errors?: Error[];
 }

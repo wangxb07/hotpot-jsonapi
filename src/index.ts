@@ -21,13 +21,18 @@ export {
   RelationshipReferenceError,
   ModelDefinition,
   AttributeDefinition,
-  RelationshipDefinition
+  RelationshipDefinition,
+  TypeConflictError
 } from "./schema";
 
 export {
   default as JsonapiManager,
   NotFoundModelError,
-  JsonapiManagerOptions
+  JsonapiManagerOptions,
+  SerializerInterface,
+  FetchableInterface,
+  HttpClientNotImplementedError,
+  SerializerNotImplementedError
 } from "./jsonapi-manager";
 
 export {
@@ -73,7 +78,7 @@ export {
 } from "./jsonapi-resource-relationship";
 
 export {
-  default as JsonapiResourceLink, Fetchable
+  default as JsonapiResourceLink
 } from "./jsonapi-resource-link";
 
 export {

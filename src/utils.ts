@@ -6,7 +6,7 @@
  * @template T
  */
 export interface Dict<T> {
-    [key: string]: T;
+  [key: string]: T;
 }
 
 export type Method =
@@ -21,65 +21,65 @@ export type Method =
   | 'unlink' | 'UNLINK'
 
 export interface FetchOptions {
-    method?: Method;
-    headers?: any;
-    body?: any;
-    mode?: "cors" | "no-cors" | "same-origin";
-    credentials?: "omit" | "same-origin" | "include";
-    cache?: "default" | "no-store" | "reload" | "no-cache" | "force-cache" | "only-if-cached";
-    redirect?: "follow" | "error" | "manual";
-    referrer?: string;
-    referrerPolicy?: "referrer" | "no-referrer-when-downgrade" | "origin" | "origin-when-cross-origin" | "unsafe-url";
-    integrity?: any;
+  method?: Method;
+  headers?: any;
+  body?: any;
+  mode?: "cors" | "no-cors" | "same-origin";
+  credentials?: "omit" | "same-origin" | "include";
+  cache?: "default" | "no-store" | "reload" | "no-cache" | "force-cache" | "only-if-cached";
+  redirect?: "follow" | "error" | "manual";
+  referrer?: string;
+  referrerPolicy?: "referrer" | "no-referrer-when-downgrade" | "origin" | "origin-when-cross-origin" | "unsafe-url";
+  integrity?: any;
 }
 
 declare enum ResponseType {
-    Basic,
-    Cors,
-    Default,
-    Error,
-    Opaque
+  Basic,
+  Cors,
+  Default,
+  Error,
+  Opaque
 }
 
 export interface Headers {
-    append(name: string, value: string): void;
+  append(name: string, value: string): void;
 
-    delete(name: string): void;
+  delete(name: string): void;
 
-    get(name: string): string;
+  get(name: string): string;
 
-    getAll(name: string): Array<string>;
+  getAll(name: string): Array<string>;
 
-    has(name: string): boolean;
+  has(name: string): boolean;
 
-    set(name: string, value: string): void;
+  set(name: string, value: string): void;
 }
 
 export interface Body {
-    bodyUsed: boolean;
+  bodyUsed: boolean;
 
-    arrayBuffer(): Promise<ArrayBuffer>;
+  arrayBuffer(): Promise<ArrayBuffer>;
 
-    blob(): Promise<any>;
+  blob(): Promise<any>;
 
-    formData(): Promise<any>;
+  formData(): Promise<any>;
 
-    json(): Promise<JSON>;
+  json(): Promise<JSON>;
 
-    text(): Promise<string>;
+  text(): Promise<string>;
 }
 
 export interface Response extends Body {
-    error(): Response;
+  error(): Response;
 
-    redirect(url: string, status?: number): Response;
+  redirect(url: string, status?: number): Response;
 
-    type: ResponseType;
-    url: string;
-    status: number;
-    ok: boolean;
-    statusText: string;
-    headers: Headers;
+  type: ResponseType;
+  url: string;
+  status: number;
+  ok: boolean;
+  statusText: string;
+  headers: Headers;
 
-    clone(): Response;
+  clone(): Response;
 }
