@@ -43,11 +43,18 @@ const manager: JsonapiManager = new JsonapiManager({
  urlResolver: new UrlResolverMapping({
    'article': '/node/node--article',
    'author': '/user/user',
- })
+ }),
+ deserializer: new Deserializer({})
 });
 
 // Get single entity
 const response: JsonapiResponse = manager.get('article').load(id)
+
+const deserialized = response.deserialize();
+
+// deserialized.id
+// deserialized.title
+// deserialized.author
 
 const data: JsonapiResource = response.data()
 
@@ -57,14 +64,6 @@ const type = data.type
 
 // attributes
 const attrs = data.attributes
-
-// or attributes with processor
-const attrs = data.serialize({
-  keyConversion: '', // Options include: dash-case (default),
-                    // lisp-case, spinal-case, kebab-case,
-                    // underscore_case, snake_case, camelCase, CamelCase,
-  serializers: [DateTimeSerializer]
-})
 
 // relationships
 const author: JsonapiResourceIdentifier = data.getRelationship('author').getResourceIdentity();
