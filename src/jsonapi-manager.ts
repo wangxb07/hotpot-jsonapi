@@ -33,7 +33,7 @@ export class HttpClientNotImplementedError implements Error {
   name: string;
 }
 
-export class SerializerNotImplementedError implements Error {
+export class DeserializerNotImplementedError implements Error {
   message: string;
   name: string;
 }
@@ -107,7 +107,7 @@ export default class JsonapiManager {
 
   deserialize(res: ResourceDocument, options?: SerializeOptions) {
     if (this._deserializer === undefined) {
-      throw new SerializerNotImplementedError();
+      throw new DeserializerNotImplementedError();
     }
     return this._deserializer.deserialize(res, options);
   }

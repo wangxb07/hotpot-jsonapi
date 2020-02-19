@@ -4,7 +4,8 @@
   "description": "A lightweight jsonapi client implement by typescript.",
   "main": "dist/index.js",
   "repository": {
-    "url": "http://www.github.com/wangxb07/hotpot-jsonapi"
+    "type": "git",
+    "url": "https://www.github.com/wangxb07/hotpot-jsonapi"
   },
   "scripts": {
     "test": "jest --verbose false",

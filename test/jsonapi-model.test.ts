@@ -11,6 +11,7 @@ import {
   JsonapiResource,
   JsonapiModel
 } from "../src";
+import {Deserializer} from "ts-jsonapi";
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -36,6 +37,9 @@ describe('JsonapiModel', () => {
       schema: schema_simple,
       host: 'http://example.com/jsonapi',
       httpClient: new FetchAxios(),
+      deserializer: new Deserializer({
+        keyForAttribute: 'camelCase',
+      })
     })
   });
 
@@ -204,4 +208,53 @@ describe('JsonapiModel', () => {
     expect(d1.id).toEqual("1");
     expect(d1.attributes.title).toEqual("JSON:API paints my bikeshed!");
   });
+
+  test('fetch collection of model and deserialize', async () => {
+    mockedAxios.get.mockResolvedValue({
+      "links": {
+        "self": "http://example.com/articles",
+        "next": "http://example.com/articles?page[offset]=2",
+        "last": "http://example.com/articles?page[offset]=10"
+      },
+      "data": [{
+        "type": "article",
+        "id": "1",
+        "attributes": {
+          "title": "JSON:API paints my bikeshed!"
+        },
+        "links": {
+          "self": "http://example.com/articles/1"
+        }
+      }, {
+        "type": "article",
+        "id": "2",
+        "attributes": {
+          "title": "JSON:API paints your bikeshed!"
+        },
+        "links": {
+          "self": "http://example.com/articles/2"
+        }
+      }]
+    });
+
+    const query = new JsonapiQuery();
+    query.filter([{
+      attribute: 'age',
+      op: '<',
+      value: 10
+    }]).sort('title', '-created')
+      .page({offset: 0, limit: 10});
+
+    const m = manager_simple.get('article');
+    const response = await m.load(query);
+    expect(response).toBeInstanceOf(JsonapiResponse);
+
+    const data = response.deserialize();
+
+    expect(data.length).toEqual(2);
+    expect(data[0].id).toEqual("1");
+    expect(data[0].title).toEqual("JSON:API paints my bikeshed!");
+  });
+
+
 });

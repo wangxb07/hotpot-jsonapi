@@ -12,6 +12,8 @@ export interface JsonapiResponseInterface {
   errors(): JsonapiError[];
 
   getLink(name: string): JsonapiResourceLink;
+
+  deserialize(options?: SerializeOptions): any;
 }
 
 export class JsonapiStructureBroken implements Error {
@@ -93,7 +95,7 @@ export default class JsonapiResponse implements JsonapiResponseInterface, Deseri
     return new JsonapiResourceLink(this._links[name], this._manager);
   }
 
-  deserialize(options: SerializeOptions) {
-    this._manager.deserialize(this._originData, options);
+  deserialize(options?: SerializeOptions) {
+    return this._manager.deserialize(this._originData, options);
   }
 }

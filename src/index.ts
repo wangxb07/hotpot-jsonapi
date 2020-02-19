@@ -32,7 +32,7 @@ export {
   DeserializerInterface,
   FetchableInterface,
   HttpClientNotImplementedError,
-  SerializerNotImplementedError
+  DeserializerNotImplementedError
 } from "./jsonapi-manager";
 
 export {

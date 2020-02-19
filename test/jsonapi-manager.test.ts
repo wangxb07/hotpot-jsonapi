@@ -5,9 +5,10 @@ import {
   Schema,
   Resource,
   HttpClientNotImplementedError,
-  SerializerNotImplementedError
+  DeserializerNotImplementedError
 } from "../src";
 import FetchAxios from "../src/plugins/fetch-axios";
+import { Deserializer } from "ts-jsonapi";
 
 describe('JsonapiManager', () => {
   test('can be instantiated', () => {
@@ -125,7 +126,7 @@ describe('JsonapiManager', () => {
       m.deserialize({
         data: []
       });
-    }).toThrow(SerializerNotImplementedError);
+    }).toThrow(DeserializerNotImplementedError);
   });
 
   test('deserialize simple document', () => {
@@ -142,6 +143,159 @@ describe('JsonapiManager', () => {
     const m = new JsonapiManager({
       schema: schema,
       host: "http://example.com/jsonapi",
+      deserializer: new Deserializer()
     });
+
+    const res = m.deserialize({
+      "links": {
+        "self": "http://example.com/articles",
+        "next": "http://example.com/articles?page[offset]=2",
+        "last": "http://example.com/articles?page[offset]=10"
+      },
+      "data": {
+        "type": "article",
+        "id": "1",
+        "attributes": {
+          "title": "JSON:API paints my bikeshed!"
+        },
+        "relationships": {
+          "author": {
+            "links": {
+              "self": "http://example.com/articles/1/relationships/author",
+              "related": "http://example.com/articles/1/author"
+            },
+            "data": { "type": "people", "id": "9" }
+          }
+        },
+        "links": {
+          "self": "http://example.com/articles/1"
+        }
+      }
+    });
+
+    expect(res.id).toEqual("1");
+    expect(res.title).toEqual("JSON:API paints my bikeshed!");
+  });
+
+  test('deserialize document with included ', () => {
+    const models = {
+      article: {
+        type: "articles",
+        attributes: {
+          title: {type: "string"}
+        },
+        relationships: {
+          author: {"type": "hasOne", ref: "people"},
+          comments: {"type": "hasMany", ref: "comment"}
+        }
+      },
+      people: {
+        attributes: {
+          firstName: {type: "string"},
+          lastName: {type: "string"},
+        }
+      },
+      comment: {
+        type: 'comments',
+        attributes: {
+          body: {type: "string"}
+        },
+        relationships: {
+          author: {"type": "hasOne", ref: "people"},
+        }
+      }
+    };
+    const schema = new Schema(models);
+    const m = new JsonapiManager({
+      schema: schema,
+      host: "http://example.com/jsonapi",
+      deserializer: new Deserializer({
+        keyForAttribute: 'camelCase'
+      })
+    });
+
+    const res: any[] = m.deserialize({
+      "links": {
+        "self": "http://example.com/articles",
+        "next": "http://example.com/articles?page[offset]=2",
+        "last": "http://example.com/articles?page[offset]=10"
+      },
+      "data": [{
+        "type": "articles",
+        "id": "1",
+        "attributes": {
+          "title": "JSON:API paints my bikeshed!"
+        },
+        "relationships": {
+          "author": {
+            "links": {
+              "self": "http://example.com/articles/1/relationships/author",
+              "related": "http://example.com/articles/1/author"
+            },
+            "data": {"type": "people", "id": "9"}
+          },
+          "comments": {
+            "links": {
+              "self": "http://example.com/articles/1/relationships/comments",
+              "related": "http://example.com/articles/1/comments"
+            },
+            "data": [
+              {"type": "comments", "id": "5"},
+              {"type": "comments", "id": "12"}
+            ]
+          }
+        },
+        "links": {
+          "self": "http://example.com/articles/1"
+        }
+      }],
+      "included": [{
+        "type": "people",
+        "id": "9",
+        "attributes": {
+          "firstName": "Dan",
+          "lastName": "Gebhardt",
+          "twitter": "dgeb"
+        },
+        "links": {
+          "self": "http://example.com/people/9"
+        }
+      }, {
+        "type": "comments",
+        "id": "5",
+        "attributes": {
+          "body": "First!"
+        },
+        "relationships": {
+          "author": {
+            "data": {"type": "people", "id": "2"}
+          }
+        },
+        "links": {
+          "self": "http://example.com/comments/5"
+        }
+      }, {
+        "type": "comments",
+        "id": "12",
+        "attributes": {
+          "body": "I like XML better"
+        },
+        "relationships": {
+          "author": {
+            "data": {"type": "people", "id": "9"}
+          }
+        },
+        "links": {
+          "self": "http://example.com/comments/12"
+        }
+      }]
+    });
+
+    expect(res[0].id).toEqual("1");
+    expect(res[0].title).toEqual("JSON:API paints my bikeshed!");
+    expect(res[0].author.firstName).toEqual("Dan");
+    expect(res[0].author.lastName).toEqual("Gebhardt");
+    expect(res[0].comments.length).toEqual(2);
+    expect(res[0].comments[0].body).toEqual("First!");
   });
 });
