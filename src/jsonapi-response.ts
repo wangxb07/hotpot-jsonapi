@@ -2,13 +2,9 @@ import {ResourceDocument, ResourceLink} from "./resource-document";
 import JsonapiResource, {LinkNotFoundError, SerializeOptions} from "./jsonapi-resource";
 import {ModelDefinition} from "./schema";
 import {Error as JsonapiError} from "./resource-document";
-import JsonapiManager from "./jsonapi-manager";
+import JsonapiManager, {DeserializerInterface} from "./jsonapi-manager";
 import JsonapiResourceLink from "./jsonapi-resource-link";
 import {Dict} from "./utils";
-
-export interface Serializable {
-  serialize(options: SerializeOptions): any
-}
 
 export interface JsonapiResponseInterface {
   data(): JsonapiResource | JsonapiResource[];
@@ -28,7 +24,7 @@ export class JsonapiResponseError implements Error {
   name: string;
 }
 
-export default class JsonapiResponse implements JsonapiResponseInterface, Serializable {
+export default class JsonapiResponse implements JsonapiResponseInterface, DeserializerInterface {
   private readonly _resource: JsonapiResource | JsonapiResource[];
   private readonly _originData: ResourceDocument;
   private readonly _model: ModelDefinition;
@@ -97,9 +93,7 @@ export default class JsonapiResponse implements JsonapiResponseInterface, Serial
     return new JsonapiResourceLink(this._links[name], this._manager);
   }
 
-  // TODO Implement serialize
-  // TODO Consider move serialize to JsonapiModel class. and specified serializer in the schema
-  serialize(options: SerializeOptions) {
-    this._manager.serialize(this._originData, options);
+  deserialize(options: SerializeOptions) {
+    this._manager.deserialize(this._originData, options);
   }
 }

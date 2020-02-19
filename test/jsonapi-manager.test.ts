@@ -1,4 +1,12 @@
-import {JsonapiManager, NotFoundModelError, JsonapiModel, Schema, Resource, HttpClientNotImplementedError} from "../src";
+import {
+  JsonapiManager,
+  NotFoundModelError,
+  JsonapiModel,
+  Schema,
+  Resource,
+  HttpClientNotImplementedError,
+  SerializerNotImplementedError
+} from "../src";
 import FetchAxios from "../src/plugins/fetch-axios";
 
 describe('JsonapiManager', () => {
@@ -102,5 +110,38 @@ describe('JsonapiManager', () => {
 
     expect(m.getModelDefinition('article')).toEqual(models['article']);
     expect(() => m.getModelDefinition('author')).toThrow(NotFoundModelError);
+  });
+
+  test('deserialize not be implemented', () => {
+    const models = {};
+    const schema = new Schema(models);
+
+    expect(() => {
+      const m = new JsonapiManager({
+        schema: schema,
+        host: "http://example.com/jsonapi"
+      });
+
+      m.deserialize({
+        data: []
+      });
+    }).toThrow(SerializerNotImplementedError);
+  });
+
+  test('deserialize simple document', () => {
+    const models = {
+      article: {
+        attributes: {
+          title: {type: "string"},
+          body: {type: "string"},
+          created: {type: "datetime"}
+        }
+      }
+    };
+    const schema = new Schema(models);
+    const m = new JsonapiManager({
+      schema: schema,
+      host: "http://example.com/jsonapi",
+    });
   });
 });

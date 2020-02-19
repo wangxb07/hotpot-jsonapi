@@ -29,7 +29,7 @@ export {
   default as JsonapiManager,
   NotFoundModelError,
   JsonapiManagerOptions,
-  SerializerInterface,
+  DeserializerInterface,
   FetchableInterface,
   HttpClientNotImplementedError,
   SerializerNotImplementedError
@@ -55,7 +55,6 @@ export {
 export {
   default as JsonapiResponse,
   JsonapiResponseInterface,
-  Serializable,
   JsonapiResponseError,
   JsonapiStructureBroken
 } from "./jsonapi-response";

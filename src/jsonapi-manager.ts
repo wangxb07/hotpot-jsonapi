@@ -6,8 +6,8 @@ import JsonapiStorage, {JsonapiStorageInterface} from "./jsonapi-storage";
 import {ResourceDocument} from "./resource-document";
 import {SerializeOptions} from "./jsonapi-resource";
 
-export interface SerializerInterface {
-  serialize(res: ResourceDocument, options?: SerializeOptions): any;
+export interface DeserializerInterface {
+  deserialize(res: ResourceDocument, options?: SerializeOptions): any;
 }
 
 export interface FetchableInterface {
@@ -18,7 +18,7 @@ export interface FetchableInterface {
 export interface JsonapiManagerOptions {
   schema: Schema;
   host: string;
-  serializer?: SerializerInterface;
+  deserializer?: DeserializerInterface;
   httpClient?: FetchableInterface;
   urlResolver?: UrlResolverInterface;
 }
@@ -44,7 +44,7 @@ export default class JsonapiManager {
   private readonly _host: string;
   private readonly _httpClient: FetchableInterface;
   private readonly _urlResolver: UrlResolverInterface;
-  private _serializer: SerializerInterface;
+  private _deserializer: DeserializerInterface;
 
   constructor(options: JsonapiManagerOptions) {
     this._schema = options.schema;
@@ -57,8 +57,8 @@ export default class JsonapiManager {
       this._httpClient = options.httpClient
     }
 
-    if (options.serializer !== undefined) {
-      this._serializer = options.serializer;
+    if (options.deserializer !== undefined) {
+      this._deserializer = options.deserializer;
     }
   }
 
@@ -105,10 +105,10 @@ export default class JsonapiManager {
     return this._httpClient.fetch(url, options);
   }
 
-  serialize(res: ResourceDocument, options?: SerializeOptions) {
-    if (this._serializer === undefined) {
+  deserialize(res: ResourceDocument, options?: SerializeOptions) {
+    if (this._deserializer === undefined) {
       throw new SerializerNotImplementedError();
     }
-    return this._serializer.serialize(res, options);
+    return this._deserializer.deserialize(res, options);
   }
 }
