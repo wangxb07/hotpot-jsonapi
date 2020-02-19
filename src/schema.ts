@@ -24,6 +24,11 @@ export class RelationshipReferenceError implements Error {
   name: string;
 }
 
+export class TypeConflictError implements Error {
+  message: string;
+  name: string;
+}
+
 export default class Schema {
   private _models: Dict<ModelDefinition>;
 
@@ -48,12 +53,20 @@ export default class Schema {
       }
     };
 
+    let types: string[] = [];
+
     Object.keys(models).forEach((key: string) => {
       const m = models[key];
 
       if (m.type === undefined) {
         m.type = key;
       }
+
+      if (types.indexOf(m.type) >= 0) {
+        throw new TypeConflictError();
+      }
+
+      types.push(m.type);
 
       if (m.primary === undefined) {
         m.primary = 'id';
@@ -100,5 +113,16 @@ export default class Schema {
     }
 
     return m;
+  }
+
+  getName(model: string | ModelDefinition): string {
+    let cb: (k: string) => boolean;
+    if (typeof model === 'string') {
+      cb = (k: string) => this._models[k].type === model;
+    } else {
+      cb = (k: string) => this._models[k].type === model.type;
+    }
+
+    return Object.keys(this._models).find(cb);
   }
 }

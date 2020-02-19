@@ -1,4 +1,4 @@
-import { Schema, RelationshipReferenceError} from "../src/index";
+import { Schema, RelationshipReferenceError, TypeConflictError} from "../src/index";
 import {expression} from "@babel/template";
 
 describe('Schema', () => {
@@ -136,5 +136,45 @@ describe('Schema', () => {
     expect(schema.hasModel('store')).toBeTruthy();
     expect(schema.hasModel('commerce_store--online')).toBeTruthy();
     expect(schema.hasModel('commerce_store')).toBeFalsy();
+  });
+
+  test('type conflict error', () => {
+    const models = {
+      article: {
+        attributes: {
+          title: {type: "string"}
+        }
+      },
+      store: {
+        type: 'article',
+        attributes: {
+          name:{ type: "string" },
+        }
+      }
+    };
+
+    expect(() => new Schema(models)).toThrow(TypeConflictError);
+  });
+
+  test('get model name', () => {
+    const models = {
+      article: {
+        type: 'article',
+        attributes: {
+          title: {type: "string"}
+        }
+      },
+      store: {
+        type: 'commerce_store--online',
+        attributes: {
+          name:{ type: "string" },
+        }
+      }
+    };
+
+    const schema = new Schema(models);
+
+    expect(schema.getName('commerce_store--online')).toEqual('store');
+    expect(schema.getName('article')).toEqual('article');
   });
 });
