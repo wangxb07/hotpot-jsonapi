@@ -12,6 +12,8 @@ import {
   JsonapiModel
 } from "../src";
 import {Deserializer} from "ts-jsonapi";
+// @ts-ignore
+import {jsonapi_orders} from "../mock";
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -29,6 +31,18 @@ describe('JsonapiModel', () => {
           body: {type: "string"},
           created: {type: "datetime"}
         }
+      },
+      order: {
+        type: 'commerce_order--default',
+      },
+      store: {
+        type: 'commerce_store--offline',
+      },
+      user: {
+        type: 'user--user',
+      },
+      file: {
+        type: 'file--file',
       }
     };
 
@@ -249,12 +263,11 @@ describe('JsonapiModel', () => {
     const response = await m.load(query);
     expect(response).toBeInstanceOf(JsonapiResponse);
 
-    const data = response.deserialize();
+    const data = await response.deserialize();
 
     expect(data.length).toEqual(2);
     expect(data[0].id).toEqual("1");
     expect(data[0].title).toEqual("JSON:API paints my bikeshed!");
-  });
-
+  }, 1000);
 
 });

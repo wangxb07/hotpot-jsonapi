@@ -7,7 +7,7 @@ import {ResourceDocument} from "./resource-document";
 import {SerializeOptions} from "./jsonapi-resource";
 
 export interface DeserializerInterface {
-  deserialize(res: ResourceDocument, options?: SerializeOptions): any;
+  deserialize(res: ResourceDocument, options?: SerializeOptions): Promise<any>;
 }
 
 export interface FetchableInterface {
@@ -105,10 +105,10 @@ export default class JsonapiManager {
     return this._httpClient.fetch(url, options);
   }
 
-  deserialize(res: ResourceDocument, options?: SerializeOptions) {
+  async deserialize(res: ResourceDocument, options?: SerializeOptions): Promise<any> {
     if (this._deserializer === undefined) {
-      throw new DeserializerNotImplementedError();
+      return Promise.reject(new DeserializerNotImplementedError());
     }
-    return this._deserializer.deserialize(res, options);
+    return await this._deserializer.deserialize(res, options);
   }
 }

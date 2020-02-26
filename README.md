@@ -17,7 +17,8 @@ const schema = new Schema({
       created: { type: "datetime" }
     },
     relationships: {
-      author: { type: 'hasOne', ref: 'author' }
+      author: { type: 'hasOne', ref: 'author'},
+      field_images: {type: 'hasMany', ref: 'file', as: 'images'}
     }
   },
   author: {
@@ -89,7 +90,7 @@ const errors = response.errors()
 ```typescript
 
 const query = new JsonapiQuery()
-query.filters([{
+query.filter([{
   attribute: 'age',
   op: '<',
   value: 10

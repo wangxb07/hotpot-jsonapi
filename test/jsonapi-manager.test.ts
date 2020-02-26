@@ -117,19 +117,21 @@ describe('JsonapiManager', () => {
     const models = {};
     const schema = new Schema(models);
 
-    expect(() => {
+    expect(async () => {
       const m = new JsonapiManager({
         schema: schema,
         host: "http://example.com/jsonapi"
       });
 
-      m.deserialize({
+      await m.deserialize({
         data: []
+      }).catch(e => {
+        expect(e).toBeInstanceOf(DeserializerNotImplementedError)
       });
-    }).toThrow(DeserializerNotImplementedError);
+    })
   });
 
-  test('deserialize simple document', () => {
+  test('deserialize simple document', async () => {
     const models = {
       article: {
         attributes: {
@@ -146,7 +148,7 @@ describe('JsonapiManager', () => {
       deserializer: new Deserializer()
     });
 
-    const res = m.deserialize({
+    const res = await m.deserialize({
       "links": {
         "self": "http://example.com/articles",
         "next": "http://example.com/articles?page[offset]=2",
@@ -175,9 +177,9 @@ describe('JsonapiManager', () => {
 
     expect(res.id).toEqual("1");
     expect(res.title).toEqual("JSON:API paints my bikeshed!");
-  });
+  }, 1000);
 
-  test('deserialize document with included ', () => {
+  test('deserialize document with included ', async () => {
     const models = {
       article: {
         type: "articles",
@@ -214,7 +216,7 @@ describe('JsonapiManager', () => {
       })
     });
 
-    const res: any[] = m.deserialize({
+    const res: any[] = await m.deserialize({
       "links": {
         "self": "http://example.com/articles",
         "next": "http://example.com/articles?page[offset]=2",
@@ -297,5 +299,5 @@ describe('JsonapiManager', () => {
     expect(res[0].author.lastName).toEqual("Gebhardt");
     expect(res[0].comments.length).toEqual(2);
     expect(res[0].comments[0].body).toEqual("First!");
-  });
+  }, 1000);
 });
