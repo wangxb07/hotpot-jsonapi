@@ -1,4 +1,7 @@
-import { Schema, RelationshipReferenceError, TypeConflictError} from "../src/index";
+import {Schema, RelationshipReferenceError, TypeConflictError, UrlResolverMapping} from "../src/index";
+import FetchAxios from "../src/plugins/fetch-axios";
+import {Deserializer} from "ts-jsonapi";
+import JsonapiManager from "../src/jsonapi-manager";
 
 describe('Schema', () => {
   test('can be instantiated', () => {
@@ -176,4 +179,53 @@ describe('Schema', () => {
     expect(schema.getName('commerce_store--online')).toEqual('store');
     expect(schema.getName('article')).toEqual('article');
   });
+
+  test('test', async () => {
+    const schema = new Schema({
+      store:{
+        type: 'commerce_store--offline',
+        primary: 'id',
+        attributes: {
+          name: {type: "string"},
+          mail: {type: "string"},
+        },
+      },
+      fieldListImage: {
+        type: 'file',
+      },
+      order: {
+        type: 'commerce_order--default'
+      },
+      offlineOrder: {
+        type: 'commerce_order--offline'
+      },
+      coupon: {
+        type: 'commerce_promotion_coupon--commerce_promotion_coupon'
+      },
+      comment: {
+        type: 'comment--order_comment'
+      },
+      term: {
+        type: 'taxonomy_term--business_scope'
+      },
+    })
+
+    const manager = new JsonapiManager({
+      schema: schema,
+      host: "https://s1.beehomeplus.cn:8443/gdlf",
+      httpClient: new FetchAxios(),
+      deserializer: new Deserializer({
+        keyForAttribute: 'camelCase',
+      }),
+      urlResolver: new UrlResolverMapping({
+        'store': '/jsonapi/commerce_store/offline',
+        'order': '/jsonapi/commerce_order/default',
+        'comment': '/jsonapi/comment/order_comment',
+        'term': '/jsonapi/taxonomy_term/business_scope',
+        'offlineOrder': '/jsonapi/commerce_order/offline',
+      })
+    })
+    await manager.get('offlineOrder').load('42b94417-47f3-4105-bca9-e79f471658fa');
+  }, 10000)
+
 });

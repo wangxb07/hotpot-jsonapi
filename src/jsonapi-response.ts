@@ -46,24 +46,27 @@ export default class JsonapiResponse implements JsonapiResponseInterface, Deseri
         data = json.data;
       }
 
-      if (data === undefined ||
-        data.type === undefined ||
-        data.id === undefined) {
-        throw new JsonapiStructureBroken();
-      }
+      if (data !== undefined) {
+        if (
+          data.type === undefined ||
+          data.id === undefined) {
+          throw new JsonapiStructureBroken();
+        }
+        else {
+          this._model = manager.getModelDefinition(data.type);
 
-      this._model = manager.getModelDefinition(data.type);
+          if (Array.isArray(json.data)) {
+            this._resource = json.data.map((d: any) => {
+              return new JsonapiResource(d, manager)
+            })
+          } else {
+            this._resource = new JsonapiResource(data, manager);
+          }
 
-      if (Array.isArray(json.data)) {
-        this._resource = json.data.map((d: any) => {
-          return new JsonapiResource(d, manager)
-        })
-      } else {
-        this._resource = new JsonapiResource(data, manager);
-      }
-
-      if (json.links !== undefined) {
-        this._links = json.links;
+          if (json.links !== undefined) {
+            this._links = json.links;
+          }
+        }
       }
     }
   }
@@ -87,6 +90,7 @@ export default class JsonapiResponse implements JsonapiResponseInterface, Deseri
     return this._originData.errors;
   }
 
+  // TODO links host need to replace.
   getLink(name: string): JsonapiResourceLink {
     if (this._links[name] === undefined) {
       throw new LinkNotFoundError();

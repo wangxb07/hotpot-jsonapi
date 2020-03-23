@@ -161,8 +161,10 @@ describe('JsonapiResponse', () => {
     }, manager_simple);
 
     const self = res.getLink('self');
+    const next = res.getLink('next');
     expect(self).toBeInstanceOf(JsonapiResourceLink);
     expect(self.href).toEqual("http://example.com/articles");
+    expect(next.href).toEqual("http://example.com/articles?page[offset]=2");
 
     expect(() => res.getLink("unknown")).toThrow(LinkNotFoundError);
 
@@ -179,5 +181,18 @@ describe('JsonapiResponse', () => {
     const d1 = (d as Array<JsonapiResource>)[0];
     expect(d1.id).toEqual('5b25da2e-2eb2-428d-a6eb-501f8c3a84dc');
     expect(d1.attributes.name).toEqual('91shuichan');
+  });
+
+  test('data is empty', () => {
+    const res = new JsonapiResponse({
+      "links": {
+        "self": "http://example.com/articles",
+        "next": "http://example.com/articles?page[offset]=2",
+        "last": "http://example.com/articles?page[offset]=10"
+      },
+      "data": []
+    }, manager_simple);
+
+    expect(res).toBeInstanceOf(JsonapiResponse);
   });
 });

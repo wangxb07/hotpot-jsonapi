@@ -1,6 +1,6 @@
 {
   "name": "hotpot-jsonapi",
-  "version": "1.0.2-alpha7",
+  "version": "1.0.2",
   "description": "A lightweight jsonapi client implement by typescript.",
   "main": "dist/index.js",
   "repository": {

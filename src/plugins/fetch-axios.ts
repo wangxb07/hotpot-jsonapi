@@ -34,6 +34,9 @@ export default class FetchAxios implements FetchableInterface {
 
     return axios(url, {
       ...axiosOptions
+    }).then(res => {
+      console.log(res)
+      return res.data
     });
   }
 }
